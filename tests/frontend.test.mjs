@@ -45,7 +45,10 @@ test('image reading previews before replacing input; rejection preserves existin
  await elements.get('readImages').onclick();assert.equal(elements.get('text1').value,'Old text');assert.equal(elements.get('extractionReview').hidden,false);
  elements.get('applyExtraction').onclick();assert.equal(elements.get('text1').value,'First text');assert.equal(elements.get('text2').value,'Second text');assert.equal(elements.get('question').value,'New question');
  context.fetch=async()=>({ok:false,json:async()=>({error:'File tidak didukung karena bukan soal Bahasa Inggris.'})});
- await elements.get('readImages').onclick();assert.equal(elements.get('question').value,'New question');assert.equal(elements.get('extractionReview').hidden,true);assert.match(elements.get('imageMessage').textContent,/bukan soal Bahasa Inggris/);
+ await elements.get('readImages').onclick();assert.equal(elements.get('question').value,'New question');assert.equal(elements.get('extractionReview').hidden,true);assert.match(elements.get('imageMessage').textContent,/bukan soal Bahasa Inggris/);assert.equal(elements.get('ocrFallback').hidden,false);
+ elements.get('cleartext1').onclick();assert.equal(elements.get('text1').value,'');assert.equal(elements.get('question').value,'New question');assert.equal(elements.get('count1').textContent,'0 kata');
+ elements.get('clearquestion').onclick();assert.equal(elements.get('question').value,'');
+ context.imageMessage('Berhasil');assert.equal(elements.get('ocrFallback').hidden,true);
 });
 test('stream parser handles fragmented progress, final errors and truncated connections',async()=>{
  const {context}=runtime();const messages=[];

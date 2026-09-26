@@ -1,6 +1,6 @@
 {
   "name": "analisis-butir-soal",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "type": "module",
   "description": "Analisis satu soal Bahasa Inggris terhadap kisi-kisi dengan Gemini, Barrett, dan Bloom",
