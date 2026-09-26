@@ -6,6 +6,24 @@ Aplikasi untuk guru Bahasa Inggris: satu butir soal dibandingkan dengan kisi-kis
 
 Implementasi frontend, Netlify Function, rubrik, dan tes kontrak sudah tersedia. Paket ini belum diterbitkan ke akun Netlify pengguna. Pengujian Gemini langsung memerlukan API key yang valid dan kuota model pada akun pengguna. Tidak ada API key di dalam paket.
 
+## Pembaruan v1.6.0
+
+Rubrik lengkap dapat dibuka melalui **Baca rubrik penilaian lengkap** di aplikasi atau file `public/rubrik.html`. Rubrik terdiri dari 7 kategori × 4 kriteria, level 0–4 dengan alasan dan kutipan. Server menghitung skor kategori serta label; skor dari penyedia tidak dipakai. Keberadaan kutipan diperiksa terhadap input, tetapi kesesuaian maknanya tetap memerlukan telaah.
+
+Label dasar: ≥90 Sangat Sesuai, ≥75 Sesuai, ≥50 Kurang Sesuai, <50 Tidak Sesuai. Label akhir dibatasi jika kunci belum pasti, kategori sangat lemah, atau ada temuan material; alasannya tampil di hasil. Rata-rata angka tetap ditampilkan apa adanya.
+
+PG kompleks kategori memiliki kunci, status, alasan dan bukti per baris. Prompt pembacaan gambar mempertahankan baris dan kolom kategorinya. Hasil juga menampilkan rincian empat kriteria per kategori.
+
+Retry/fallback tetap dipertahankan sesuai permintaan sebelumnya. Keduanya memakai rubrik yang sama; interpretasi tetap dapat bervariasi. Temperature ditetapkan 1 sesuai panduan Gemini 3 (https://ai.google.dev/gemini-api/docs/generate-content/gemini-3), bukan diturunkan untuk menjanjikan determinisme. Belum ada uji akurasi dengan soal acuan guru atau API langsung.
+
+Untuk memperbarui dokumen setelah mengubah definisi kriteria: `node scripts/export-rubric.mjs`. Formula di dokumen harus tetap diselaraskan dengan contract.mjs.
+
+## Pembaruan v1.5.0
+
+- Tampilan minimalis dengan biru muda, ungu, putih, dan teks gelap; tetap tiga halaman dan responsif.
+- Tombol Clear di Teks 1, Teks 2, serta kolom pertanyaan/opsi menghapus hanya kolom terkait, memperbarui hitungan kata dan draf, serta membatalkan hasil telaah lama.
+- Jika gambar gagal disiapkan/dibaca, tampil tautan https://www.imagetotext.info/ beserta petunjuk menyalin hasil ke kolom soal. Situs terbuka pada tab baru; aplikasi tidak mengirim gambar ke situs itu secara otomatis.
+
 ## Pembaruan v1.4.0
 
 Aplikasi memiliki tiga halaman tampilan terpisah dalam satu aplikasi:
@@ -57,7 +75,7 @@ KD/Indikator dan Deskripsi/Ruang Lingkup digabung menjadi satu kolom **Kisi-kisi
 - Tipe soal berupa teks bebas; mendukung PG, PG kompleks/kategori, isian, matching, uraian, dan tipe lain melalui instruksi AI.
 - Enam parameter kisi-kisi wajib, kelas 1–12 opsional, 1 atau 2 stimulus.
 - Jumlah kata informatif; tidak menjadi skor tersendiri.
-- Tujuh kategori berbobot sama, skor 1–100, label ditentukan AI.
+- Tujuh kategori berbobot sama, skor 1–100 dihitung dari level empat kriteria; label ditentukan kode.
 - Skor keseluruhan dihitung di backend sebagai rata-rata tepat tujuh skor.
 - Rubrik Barrett dan Bloom revisi terpisah, disertakan di setiap permintaan AI.
 - Analisis grammar untuk stimulus, stem, options dan instruksi.
@@ -153,7 +171,7 @@ Tes menggunakan respons buatan untuk memeriksa perilaku aplikasi; bukan bukti ak
 
 - Skor 1–100 adalah kesesuaian berdasarkan rubrik aplikasi, bukan skor resmi Barrett/Bloom, validitas empiris, daya beda, reliabilitas, atau indeks kesukaran.
 - Kategori lebih tinggi tidak otomatis lebih baik. Soal Literal/C1 boleh mendapat 100 bila tepat sasaran.
-- Label diberikan AI tanpa ambang angka yang dipaksakan kode; hasil dapat bervariasi antarpermintaan/model. Angka rata-rata selalu dihitung server.
+- Label dihitung dari ambang skor dan aturan pembatas. Interpretasi kriteria dapat bervariasi antarpermintaan/model meskipun perhitungan deterministik.
 - Barrett digunakan untuk reading comprehension. Soal yang tidak mengukur bacaan akan diberi penjelasan keterbatasan oleh AI.
 - CEFR adalah estimasi tuntutan bahasa dan tugas, bukan sertifikasi.
 - Referensi diringkas ke rubrik backend, bukan dibaca ulang dari web pada setiap analisis.

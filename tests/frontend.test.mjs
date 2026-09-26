@@ -22,9 +22,12 @@ test('render all 7 score cards, both complete texts and suppress revision for ve
  const {context,elements}=runtime();
  const input={stimuli:['Rina see a woman.','Dina walks home.'],question:'What does Rina do? A. Help B. Leave'};
  const result={answerKey:{status:'Ditentukan',answer:'A. Help',explanation:'Evidence from text.'},categories:['type','genre','barrett','kisi','bloom','cefr','grammar'].map(id=>({id,score:88,label:'Sesuai',target:'Target',identified:'Terdeteksi',analysis:'Analisis',evidence:'Bukti'})),overall:{score:88,label:'Sesuai',reason:'Ada perbaikan.'},grammar:{summary:'Grammar perlu perbaikan.',notes:[]},issues:[],revision:{stimuli:['Rina saw a woman.','Dina walks home.'],question:input.question,rationale:'Perbaikan verb.',answerKey:{status:'Ditentukan',answer:'A. Help',explanation:'Evidence.'}}};
+ result.categories[0].criteria=[{index:1,criterion:'Format sesuai',level:3,reason:'Periksa instruksi',quote:'Rina see a woman.'}];
+ result.answerKey.rows=[{statement:'Rina helps.',answer:'True',status:'Ditentukan',explanation:'Bukti',evidence:'Rina see a woman.'}];
+ result.overall.rules=['Kunci perlu diperiksa.'];
  context.renderResult({result,meta:{}},input);
  let rendered=elements.get('results').innerHTML;
- assert.equal((rendered.match(/class="score-card"/g)||[]).length,7);
+ assert.equal((rendered.match(/class="score-card"/g)||[]).length,7);assert.match(rendered,/Rincian rubrik/);assert.match(rendered,/Kunci perlu diperiksa/);assert.match(rendered,/rubric-table/);
  assert.equal((rendered.match(/class="comparison-text"/g)||[]).length,6);
  assert.match(rendered,/<mark>saw<\/mark>/);assert.match(rendered,/Kunci jawaban — Soal asli/);assert.match(rendered,/Kunci jawaban — Soal revisi/);assert.ok(!/\bAI\b|gemini|Analisis AI/i.test(rendered));
  result.overall.label='Sangat Sesuai';context.renderResult({result,meta:{}},input);rendered=elements.get('results').innerHTML;
