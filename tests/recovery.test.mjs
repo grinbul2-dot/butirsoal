@@ -34,12 +34,11 @@ test('rejected images and safety blocks are not retried; malformed output is',as
  const y=await scenario([{ok:true,json:async()=>{throw new SyntaxError('bad');}},ok({})]);assert.equal(y.calls.length,2);
  const controller=new AbortController();controller.abort();const z=await scenario([ok({})],{signal:controller.signal});assert.equal(z.calls.length,0);
 });
-test('native endpoint streams real progress before completion and preserves JSON status',async()=>{
- let finish;const gate=new Promise(resolve=>finish=resolve);
+test('endpoint waits for complete JSON even for an old streaming client',async()=>{
+ let finish;const gate=new Promise(resolve=>finish=resolve);let returned=false;
  const fn=endpoint(async(_event,progress)=>{progress('Mencoba ulang');await gate;return reply(200,{result:{done:true}});});
- const response=await fn(new Request('https://example.test',{headers:{Accept:'application/x-ndjson'}}));const reader=response.body.getReader();
- assert.match(new TextDecoder().decode((await reader.read()).value),/Permintaan diterima/);
- assert.match(new TextDecoder().decode((await reader.read()).value),/Mencoba ulang/);
- finish();assert.match(new TextDecoder().decode((await reader.read()).value),/"type":"result"/);assert.equal((await reader.read()).done,true);
- const error=await endpoint(async()=>reply(503,{error:'Konfigurasi belum lengkap'}))(new Request('https://example.test'));assert.equal(error.status,503);
+ const pending=fn(new Request('https://example.test',{headers:{Accept:'application/x-ndjson'}})).then(r=>{returned=true;return r;});
+ await Promise.resolve();assert.equal(returned,false);finish();
+ const response=await pending;assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/application\/json/);assert.equal((await response.json()).result.done,true);
+ const error=await endpoint(async()=>reply(503,{error:'Konfigurasi belum lengkap'}))(new Request('https://example.test'));assert.equal(error.status,503);assert.equal((await error.json()).error,'Konfigurasi belum lengkap');
 });

@@ -85,10 +85,10 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 </div>
 <section id="step3" hidden aria-label="Analisis dan telaah">
 <div class="actions result-actions"><button type="button" id="editQuestion">Kembali ke Butir Soal</button><button type="button" class="primary" id="startNew">START NEW ANALYSIS</button></div>
-<section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Tahap pemeriksaan ditampilkan sebagai panduan; proses pemeriksaan dapat berlangsung bersamaan.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section>
+<section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Mohon tunggu. Jika layanan sibuk, server mencoba ulang otomatis. Hasil dikirim setelah pemeriksaan selesai.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section>
 <section id="results" class="results" aria-label="Hasil analisis" hidden></section>
 </section>
-<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah.</span></footer>
+<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v1.6.1</span></footer>
 </main>
 <script>
 'use strict';
@@ -168,7 +168,7 @@ function renderResult(data,input){
 }
 async function readServiceResponse(response,onProgress){
  if(!response.headers?.get('content-type')?.includes('application/x-ndjson')){
-  let data;try{data=await response.json();}catch{throw new Error(response.status===404?'Layanan belum terpasang. Hubungi pengelola untuk memeriksa deployment Netlify Functions.':'Server belum dapat dihubungi. Silakan coba kembali beberapa saat lagi; isian Anda tetap tersedia.');}
+  let data;try{data=await response.json();}catch{throw new Error(response.status===404?'Layanan belum terpasang. Hubungi pengelola untuk memeriksa deployment Netlify Functions.':'Respons server tidak lengkap (HTTP '+response.status+'). Isian tetap tersedia. Hubungi pengelola dengan kode [HTTP_'+response.status+'].');}
   if(!response.ok)throw new Error(data.error||'Layanan sedang sibuk. Silakan coba kembali.');
   return data;
  }
@@ -193,12 +193,12 @@ $('analysisForm').addEventListener('submit',async event=>{
  showStep(1);if(!validGroup('step1'))return;showStep(2);if(!validGroup('step2'))return;
  const input=payload();if([...Object.values(input.blueprint),...input.stimuli,input.question].some(v=>!v.trim())){showStep(3);$('errorBox').textContent='Field wajib tidak boleh hanya berisi spasi.';$('errorBox').hidden=false;return;}
  saveDraft();invalidate();showStep(3);setBusy(true);$('results').hidden=true;$('errorBox').hidden=true;$('loadingBox').hidden=false;
- const stages=['Mencocokkan kisi-kisi…','Menelaah kategori Barrett dan Bloom…','Menganalisis grammar dan tuntutan bahasa…','Meninjau kesesuaian serta kebutuhan revisi…'];let phase=0;$('loadingText').textContent=stages[0];
+ const stages=['Permintaan sedang diproses…','Masih menunggu hasil pemeriksaan…','Mohon tunggu. Isian Anda tetap tersimpan…','Pemeriksaan masih berlangsung…'];let phase=0;$('loadingText').textContent=stages[0];
  let serverProgress=false;const timer=setInterval(()=>{if(serverProgress)return;$('loadingText').textContent=stages[Math.min(++phase,stages.length-1)];},6500);
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),65000);
  try{
   if(location.protocol==='file:')throw new Error('Halaman terbuka sebagai file lokal. Jalankan melalui server lokal atau Netlify agar analisis dapat diakses.');
-  const response=await fetch('/.netlify/functions/analyze',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/x-ndjson'},body:JSON.stringify(input),signal:controller.signal});
+  const response=await fetch('/.netlify/functions/analyze',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(input),signal:controller.signal});
   const data=await readServiceResponse(response,message=>{serverProgress=true;$('loadingText').textContent=message;});
   renderResult(data,input);lastInput=input;
  }catch(err){$('errorBox').textContent=err.name==='AbortError'?'Waktu tunggu habis. Input tetap tersimpan; silakan coba kembali.':err instanceof TypeError?'Tidak dapat menghubungi server. Periksa koneksi internet, lalu coba lagi.':err.message;$('errorBox').hidden=false;$('errorBox').scrollIntoView({behavior:'smooth',block:'center'});}
@@ -261,7 +261,7 @@ $('readImages').onclick=async()=>{
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),65000);
  try{
   if(location.protocol==='file:')throw new Error('Jalankan aplikasi melalui server atau Netlify untuk membaca gambar.');
-  const response=await fetch('/.netlify/functions/read-image',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/x-ndjson'},body:JSON.stringify({images:selectedImages.map(({mimeType,data})=>({mimeType,data}))}),signal:controller.signal});
+  const response=await fetch('/.netlify/functions/read-image',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({images:selectedImages.map(({mimeType,data})=>({mimeType,data}))}),signal:controller.signal});
   const body=await readServiceResponse(response,message=>imageMessage(message));
   const x=body.result;if(!x?.accepted||!Array.isArray(x.stimuli)||x.stimuli.length<1||x.stimuli.length>2||!x.stimuli.every(t=>typeof t==='string'&&t.trim()&&t.length<=20000)||typeof x.question!=='string'||!x.question.trim()||x.question.length>12000)throw new Error('Hasil pembacaan belum lengkap. Coba kembali dengan foto yang lebih jelas.');
   pendingExtraction=x;$('extractionText').textContent=x.stimuli.map((t,i)=>'Stimulus — Teks '+(i+1)+'\n'+t).join('\n\n')+'\n\nPertanyaan dan opsi / instruksi\n'+x.question;$('extractionReview').hidden=false;imageMessage('Gambar dapat dibaca. Tinjau hasilnya sebelum digunakan.');

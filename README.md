@@ -6,6 +6,16 @@ Aplikasi untuk guru Bahasa Inggris: satu butir soal dibandingkan dengan kisi-kis
 
 Implementasi frontend, Netlify Function, rubrik, dan tes kontrak sudah tersedia. Paket ini belum diterbitkan ke akun Netlify pengguna. Pengujian Gemini langsung memerlukan API key yang valid dan kuota model pada akun pengguna. Tidak ada API key di dalam paket.
 
+## Perbaikan v1.6.1
+
+Pengiriman hasil kini memakai satu respons JSON lengkap setelah pemrosesan selesai, bukan streaming progres. Backend juga melayani frontend lama yang masih meminta NDJSON dengan JSON utuh. Retry dan model cadangan tetap berjalan di server. Halaman menampilkan status menunggu dan penjelasan retry; tidak mengklaim mengetahui percobaan yang sedang berlangsung.
+
+Perbaikan ini menghilangkan ketergantungan pada streaming yang berakhir tanpa pesan terminal. Penyebab spesifik kegagalan produksi belum dikonfirmasi karena URL/log/API key pengguna belum tersedia.
+
+Error akhir dibedakan dengan kode TIME_LIMIT, INVALID_OUTPUT, MODEL_NOT_AVAILABLE, UPSTREAM_429, atau NETWORK_OR_RESPONSE. Function logs mencatat kode, status, nomor percobaan, fase cadangan, dan durasi tanpa API key, teks soal, gambar, atau keluaran penyedia.
+
+Setelah memperbarui seluruh proyek dan deploy ulang, pastikan footer menunjukkan v1.6.1. Jika gagal, catat pesan/kode, URL situs, durasi tunggu, serta log pada waktu permintaan.
+
 ## Pembaruan v1.6.0
 
 Rubrik lengkap dapat dibuka melalui **Baca rubrik penilaian lengkap** di aplikasi atau file `public/rubrik.html`. Rubrik terdiri dari 7 kategori × 4 kriteria, level 0–4 dengan alasan dan kutipan. Server menghitung skor kategori serta label; skor dari penyedia tidak dipakai. Keberadaan kutipan diperiksa terhadap input, tetapi kesesuaian maknanya tetap memerlukan telaah.
