@@ -6,15 +6,16 @@
 <title>Analisis Butir Soal — English Teacher Tools</title>
 <style>
 :root{--navy:#0b2a4a;--blue:#1e56a0;--ink:#18324d;--muted:#54677c;--line:#d6e0ea;--bg:#f1f5f9;--paper:#fff;--good:#155d3c;--teal:#17645f;--amber:#805010;--red:#a32d37;--radius:14px;font-family:Manrope,Arial,sans-serif;color:var(--ink);font-size:16px;line-height:1.55}*{box-sizing:border-box}body{margin:0;background:var(--bg)}button,input,select,textarea{font:inherit}button,a,input,select,textarea,summary{outline-offset:4px}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #3279d2}button{cursor:pointer;min-height:46px;border-radius:8px;border:1px solid var(--line);padding:10px 19px;background:white;color:var(--navy);font-weight:700}button:hover{border-color:var(--blue);background:#eef4fc}button.primary{background:var(--blue);border-color:var(--blue);color:white}button.primary:hover{background:#164780}button:disabled{opacity:.6;cursor:wait}a{color:var(--blue);text-underline-offset:3px}h1,h2,h3,p{margin-top:0}h1,h2{font-family:Fraunces,Georgia,serif;line-height:1.2;letter-spacing:-.025em}h1{font-size:clamp(2rem,4vw,2.65rem);margin-bottom:8px}h2{font-size:1.7rem;margin-bottom:10px}h3{font-size:1rem;margin-bottom:8px}p{margin-bottom:12px}small,.small{font-size:.875rem;color:var(--muted)}[hidden]{display:none!important}.masthead{background:var(--navy);color:#fff;padding:17px 0}.mast-inner{max-width:1200px;margin:auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font-size:.875rem;font-weight:700;letter-spacing:.08em}.masthead small{color:#d3e1ef}.page{max-width:1200px;padding:32px;margin:auto}.intro{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:26px}.intro p{color:var(--muted);margin:0;max-width:690px}.outline-label{font-size:.875rem;white-space:nowrap;border:1px solid #b8cbe0;border-radius:99px;padding:7px 14px;color:var(--navy);background:#e6eef8}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:24px;align-items:start}.panel{background:white;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}.form-head{padding:22px 28px 0;border-bottom:1px solid var(--line);background:#fbfcfe}.progress-label{font-size:.875rem;color:var(--muted);margin-bottom:13px}.steps{display:flex;gap:24px}.step{border:0;border-radius:0;padding:9px 0 16px;background:transparent;color:var(--muted);border-bottom:3px solid transparent;text-align:left}.step:hover{background:transparent}.step.active{color:var(--blue);border-bottom-color:var(--blue)}.step span{display:inline-flex;width:25px;height:25px;border-radius:50%;align-items:center;justify-content:center;font-size:.875rem;background:#e8eef5;margin-right:8px}.step.active span{background:var(--blue);color:white}.form-body{padding:26px 28px}.section-lead{margin-bottom:23px}.section-lead p{font-size:.875rem;color:var(--muted);margin:0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:21px 22px}.field{min-width:0}.full{grid-column:1/-1}label{display:block;font-size:.875rem;font-weight:700;margin-bottom:7px}.req{font-weight:400;color:var(--muted)}input,select,textarea{display:block;width:100%;border:1px solid #b8c8d8;color:var(--ink);border-radius:7px;background:#fff;padding:11px 12px;min-height:46px}textarea{resize:vertical;line-height:1.65}textarea.text-input{min-height:225px}input::placeholder,textarea::placeholder{color:#6c7d8c}.help{margin-top:6px;font-size:.875rem;color:var(--muted)}.actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:26px;border-top:1px solid var(--line);padding-top:21px}.draft{font-size:.875rem;color:var(--muted)}.aside{padding:23px}.aside h2{font-family:inherit;font-size:1rem;letter-spacing:0}.aside p{font-size:.875rem;color:var(--muted)}.rubric-list{padding:0;list-style:none;margin:20px 0}.rubric-list li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #e8edf3;padding:9px 0;font-size:.875rem}.rubric-list span{color:var(--muted)}details{border-top:1px solid var(--line);padding-top:12px;margin-top:14px}summary{cursor:pointer;font-size:.875rem;font-weight:700;list-style:none}summary::-webkit-details-marker{display:none}summary::after{content:'Buka';float:right;font-weight:400;color:var(--blue);margin-left:8px}details[open]>summary::after{content:'Tutup'}details p,details ul{font-size:.875rem;margin-top:12px}details ul{padding-left:20px}.references li{margin-bottom:10px}.field-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.text-button{min-height:36px;padding:3px 7px;font-size:.875rem;background:transparent;border-color:transparent;color:var(--blue)}.count{font-size:.875rem;color:var(--muted);margin-top:7px}.text-block{margin-bottom:22px}.notice{padding:16px 20px;border-radius:9px;background:#fff4df;border:1px solid #e8c78d;margin-bottom:18px;overflow-wrap:anywhere}.error{background:#fff0f0;border-color:#e3a9ae;color:#8f2830}.loading{background:#edf4fe;border-color:#bdd2ed;color:var(--navy)}.loading strong{display:block}.loading-track{height:3px;background:#cedef2;margin-top:13px;overflow:hidden}.loading-track span{display:block;width:35%;height:100%;background:var(--blue);animation:travel 2s ease-in-out infinite alternate}@keyframes travel{to{transform:translateX(180%)}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}.results{margin-top:32px}.result-top{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:17px}.result-top h2{margin:0}.overall{padding:27px 30px;background:var(--navy);color:white;display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px;align-items:center;border-radius:var(--radius);margin-bottom:20px}.overall .eyebrow{font-size:.875rem;color:#d9e6f3}.overall-number{font-size:4.2rem;line-height:1.15;font-weight:700;letter-spacing:-.05em}.overall-number small{font-size:1.2rem;color:#c1d4e8;letter-spacing:0;margin-left:7px}.overall .reason{margin:12px 0 0;color:#e3edf6}.badge{display:inline-block;border-radius:5px;padding:4px 9px;font-size:.875rem;font-weight:700;line-height:1.4}.status-0{background:#d4f1df;color:#155734}.status-1{background:#d9f1ed;color:#165b53}.status-2{background:#fff0c6;color:#764500}.status-3{background:#ffe1e3;color:#922630}.score-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}.score-card{padding:18px;background:white;border:1px solid var(--line);border-radius:10px;min-width:0}.score-card h3{font-size:.875rem;min-height:2.8em}.score-value{font-size:2rem;font-weight:700;line-height:1.25;margin-bottom:9px}.score-value small{font-weight:400;margin-left:4px}.score-card details{margin-top:15px}.score-card p{font-size:.875rem;overflow-wrap:anywhere}.detail-label{display:block;font-weight:700;margin-top:12px;font-size:.875rem}.result-section{padding:25px 28px;margin-bottom:20px}.result-section h2{font-size:1.4rem}.note-item{border-left:3px solid #bfd0e3;padding:0 0 0 16px;margin:20px 0}.note-item:last-child{margin-bottom:0}.quote{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.95rem;margin:8px 0}.correction{color:var(--good)}.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}.compare-column{min-width:0;background:#f7f9fc;border:1px solid var(--line);border-radius:9px;padding:20px}.compare-column.revised{background:#f5fbf8;border-color:#bfd9cc}.compare-column h3{font-size:.875rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:20px}.comparison-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;margin-bottom:24px}.comparison-text:last-child{margin-bottom:0}mark{background:#d5efcc;color:#204b29;border-bottom:2px solid #649052;padding:1px 0}del{background:#ffe4e4;color:#92373c;text-decoration-thickness:1px}.meta{font-size:.875rem;color:var(--muted);margin-top:14px}.footer{display:flex;justify-content:space-between;gap:16px;padding:26px 0 4px;font-size:.875rem;color:var(--muted)}.success-message{background:#ebf6ef;border:1px solid #b9d9c5;padding:20px;border-radius:10px;color:var(--good)}@media(max-width:1000px){.workspace{grid-template-columns:minmax(0,1fr) 250px}.score-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.page{padding:25px}.form-body{padding:23px}.aside{padding:19px}}@media(max-width:760px){.mast-inner{padding:0 20px}.masthead small{display:none}.page{padding:23px 16px}.intro{display:block;margin-bottom:21px}.intro .outline-label{display:inline-block;margin-top:14px}.workspace{grid-template-columns:1fr}.fields{gap:18px;grid-template-columns:1fr}.form-body,.form-head{padding-left:20px;padding-right:20px}.steps{gap:22px}.aside .rubric-list{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}.overall{grid-template-columns:1fr;gap:15px;padding:23px}.overall-number{font-size:3.5rem}.compare-grid{grid-template-columns:1fr}.result-section{padding:21px 19px}.result-top{align-items:start}.footer{display:block}.footer span{display:block;margin-bottom:7px}}@media(max-width:380px){.score-grid{grid-template-columns:1fr}.actions{flex-wrap:wrap}.actions .primary{width:100%}.steps{gap:15px}.step{font-size:.875rem}.aside .rubric-list{grid-template-columns:1fr}}@media print{.masthead,.intro,.workspace,.footer,.result-top button{display:none}.page{padding:0}.results{margin:0}.score-grid{grid-template-columns:repeat(2,1fr)}.panel,.score-card{break-inside:avoid}.overall{background:#fff;color:#18324d;border:1px solid}.overall .reason,.overall .eyebrow{color:#18324d}}
-.image-import{border:1px dashed #91abc5;border-radius:10px;padding:18px;margin-bottom:25px;background:#f6f9fd}.image-actions{display:flex;gap:9px;flex-wrap:wrap}.image-previews{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}.image-previews figure{margin:0;width:140px}.image-previews img{width:140px;height:110px;object-fit:contain;background:white;border:1px solid var(--line);border-radius:6px}.image-previews figcaption{font-size:.875rem;overflow-wrap:anywhere}.extraction-preview{white-space:pre-wrap;max-height:340px;overflow:auto;background:white;padding:14px;border:1px solid var(--line);margin:12px 0}.answer-text{white-space:pre-wrap;font-weight:700;font-size:1.05rem;overflow-wrap:anywhere}.answer-status{color:var(--muted);font-size:.875rem} </style>
+.image-import{border:1px dashed #91abc5;border-radius:10px;padding:18px;margin-bottom:25px;background:#f6f9fd}.image-actions{display:flex;gap:9px;flex-wrap:wrap}.image-previews{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}.image-previews figure{margin:0;width:140px}.image-previews img{width:140px;height:110px;object-fit:contain;background:white;border:1px solid var(--line);border-radius:6px}.image-previews figcaption{font-size:.875rem;overflow-wrap:anywhere}.extraction-preview{white-space:pre-wrap;max-height:340px;overflow:auto;background:white;padding:14px;border:1px solid var(--line);margin:12px 0}.answer-text{white-space:pre-wrap;font-weight:700;font-size:1.05rem;overflow-wrap:anywhere}.answer-status{color:var(--muted);font-size:.875rem} .page-navigation{border:1px solid var(--line);border-radius:14px;margin-bottom:24px}.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.step{overflow-wrap:anywhere}.result-actions{margin-top:0;padding-top:0;border-top:0}.results{margin-top:24px}@media(max-width:760px){.steps{gap:9px}.step{font-size:.8rem}.step span{display:flex;margin-bottom:7px}.result-actions{flex-wrap:wrap}.result-actions button{flex:1}}@media print{.page-navigation,.result-actions,#feedback{display:none!important}} </style>
 </head>
 <body>
 <header class="masthead"><div class="mast-inner"><div class="brand">SWISS ARMY TOOLS FOR ENGLISH TEACHERS</div><small>Ruang kerja guru Bahasa Inggris</small></div></header>
 <main class="page">
 <div class="intro"><div><h1>Analisis Butir Soal</h1><p>Telaah satu soal secara mendalam. Cocokkan dengan kisi-kisi, pahami alasannya, dan tinjau perbaikannya.</p></div><span class="outline-label">Barrett &amp; Bloom revisi</span></div>
-<div class="workspace">
+<div class="form-head page-navigation"><div id="progressLabel" class="progress-label">Halaman 1 dari 3</div><nav class="steps" aria-label="Halaman aplikasi"><button type="button" id="tab1" class="step active" aria-current="step"><span>1</span>Parameter &amp; Kisi-kisi</button><button type="button" id="tab2" class="step"><span>2</span>Butir Soal</button><button type="button" id="tab3" class="step" disabled><span>3</span>Analisis &amp; Telaah</button></nav></div>
+<div id="inputWorkspace" class="workspace">
 <section class="panel" aria-label="Form analisis">
-<div class="form-head"><div id="progressLabel" class="progress-label">Langkah 1 dari 2</div><nav class="steps" aria-label="Langkah pengisian"><button type="button" id="tab1" class="step active" aria-current="step"><span>1</span>Kisi-Kisi</button><button type="button" id="tab2" class="step"><span>2</span>Butir Soal</button></nav></div>
+
 <form id="analysisForm" class="form-body">
 <div id="step1">
 <div class="section-lead"><h2>Tentukan target soal</h2><p>Semua field kisi-kisi wajib diisi. Kelas bersifat opsional.</p></div>
@@ -47,8 +48,11 @@
 <details><summary>Referensi rubrik</summary><ul class="references"><li><a href="https://ejournal.unesa.ac.id/index.php/retain/article/view/62937" target="_blank" rel="noopener noreferrer">Barrett — Putri (2025), UNESA</a></li><li><a href="https://eric.ed.gov/?id=ED064672" target="_blank" rel="noopener noreferrer">Barrett — Cooke (1970), ERIC</a></li><li><a href="https://teaching.uic.edu/cate-teaching-guides/syllabus-course-design/blooms-taxonomy-of-educational-objectives/" target="_blank" rel="noopener noreferrer">Bloom revisi — UIC</a></li><li><a href="https://www.coe.int/en/web/common-european-framework-reference-languages" target="_blank" rel="noopener noreferrer">CEFR — Council of Europe</a></li></ul><p>Rubrik merupakan ringkasan operasional. Skala kesesuaian 1–100 disusun untuk aplikasi, bukan skala resmi taksonomi. Versi 2026-09-26.1.</p></details>
 </aside>
 </div>
+<section id="step3" hidden aria-label="Analisis dan telaah">
+<div class="actions result-actions"><button type="button" id="editQuestion">Kembali ke Butir Soal</button><button type="button" class="primary" id="startNew">START NEW ANALYSIS</button></div>
 <section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Tahap pemeriksaan ditampilkan sebagai panduan; proses pemeriksaan dapat berlangsung bersamaan.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section>
 <section id="results" class="results" aria-label="Hasil analisis" hidden></section>
+</section>
 <footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah.</span></footer>
 </main>
 <script>
@@ -69,19 +73,26 @@ function badge(label){return '<span class="badge status-'+labels.indexOf(label)+
 function wordCount(s){return (s.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu)||[]).length;}
 function counts(){const a=wordCount($('text1').value),b=wordCount($('text2').value);$('count1').textContent=a+' kata';$('count2').textContent=b+' kata';$('totalWords').textContent='Total stimulus: '+(a+(hasSecond?b:0))+' kata. Panjang teks tidak diberi skor langsung.';}
 function second(on){hasSecond=on;$('secondText').hidden=!on;$('addText').hidden=on;$('text2').required=on;counts();}
-function showStep(n){step=n;$('step1').hidden=n!==1;$('step2').hidden=n!==2;$('progressLabel').textContent='Langkah '+n+' dari 2';for(let i=1;i<=2;i++){$('tab'+i).classList.toggle('active',i===n);if(i===n)$('tab'+i).setAttribute('aria-current','step');else $('tab'+i).removeAttribute('aria-current');}}
+function showStep(n){
+ step=n;$('step1').hidden=n!==1;$('step2').hidden=n!==2;$('step3').hidden=n!==3;$('inputWorkspace').hidden=n===3;
+ $('progressLabel').textContent='Halaman '+n+' dari 3';
+ for(let i=1;i<=3;i++){$('tab'+i).classList.toggle('active',i===n);if(i===n)$('tab'+i).setAttribute('aria-current','step');else $('tab'+i).removeAttribute('aria-current');}
+ $('tab3').disabled=busy||!lastInput;
+ $('progressLabel').scrollIntoView({behavior:'smooth',block:'start'});
+}
 function validGroup(id){for(const el of $(id).querySelectorAll('input,textarea,select')){if(!el.checkValidity()){el.reportValidity();return false;}}return true;}
 function goNext(){if(validGroup('step1'))showStep(2);}
 $('tab1').onclick=()=>{if(!busy)showStep(1);};$('tab2').onclick=()=>{if(!busy)goNext();};$('nextBtn').onclick=goNext;$('backBtn').onclick=()=>showStep(1);
+$('tab3').onclick=()=>{if(!busy&&lastInput)showStep(3);};$('editQuestion').onclick=()=>{if(!busy)showStep(2);};
 $('addText').onclick=()=>{second(true);saveDraft();$('text2').focus();};$('removeText').onclick=()=>{second(false);saveDraft();};
 function saveDraft(){try{localStorage.setItem('analisis-butir-draft-v1',JSON.stringify({fields:Object.fromEntries(fields.map(id=>[id,$(id).value])),hasSecond}));$('draftStatus').textContent='Draf tersimpan di perangkat ini.';}catch{$('draftStatus').textContent='Penyimpanan lokal tidak tersedia. Pertahankan halaman ini tetap terbuka.';}}
-function invalidate(){if(!$('results').hidden){$('results').hidden=true;lastInput=null;}}
+function invalidate(){$('results').hidden=true;$('results').innerHTML='';lastInput=null;$('tab3').disabled=true;}
 $('analysisForm').addEventListener('input',()=>{counts();$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';invalidate();$('errorBox').hidden=true;clearTimeout(saveTimer);saveTimer=setTimeout(saveDraft,250);});
 $('analysisForm').addEventListener('change',()=>{invalidate();saveDraft();$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';});
 $('addText').addEventListener('click',invalidate);$('removeText').addEventListener('click',invalidate);
 try{const d=JSON.parse(localStorage.getItem('analisis-butir-draft-v1')||'null');if(d?.fields){if(typeof d.fields.kisi!=='string')d.fields.kisi=[d.fields.indicator,d.fields.scope].filter(v=>typeof v==='string'&&v.trim()).join('\n\n');for(const id of fields)if(typeof d.fields[id]==='string')$(id).value=d.fields[id];second(d.hasSecond===true);$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';}}catch{$('draftStatus').textContent='Draf lokal tidak tersedia.';}counts();
 function payload(){return {blueprint:Object.fromEntries(['type','genre','barrett','kisi','bloom','cefr'].map(id=>[id,$(id).value.trim()])),grade:$('grade').value?Number($('grade').value):null,stimuli:[$('text1').value.trim(),...(hasSecond?[$('text2').value.trim()]:[])],question:$('question').value.trim()};}
-function setBusy(on){busy=on;for(const el of document.querySelectorAll('form input,form textarea,form select,form button,.steps button'))el.disabled=on;$('analysisForm').setAttribute('aria-busy',String(on));$('analyzeBtn').textContent=on?'Menganalisis…':'Analisis Soal';}
+function setBusy(on){busy=on;for(const el of document.querySelectorAll('form input,form textarea,form select,form button,.steps button'))el.disabled=on;$('analysisForm').setAttribute('aria-busy',String(on));$('analyzeBtn').textContent=on?'Menganalisis…':'Analisis Soal';$('startNew').disabled=on;$('editQuestion').disabled=on;$('tab3').disabled=on||!lastInput;}
 // Word-level LCS. Large replacements use a bounded prefix/suffix comparison to keep mobile responsive.
 function diffPair(original,revised){
  if(original===revised)return {before:escapeHTML(original),after:escapeHTML(revised),coarse:false};
@@ -116,27 +127,61 @@ function renderResult(data,input){
  }else throw new Error('Revisi belum lengkap. Silakan ulangi analisis.');
  const score=Number(r.overall.score).toLocaleString('id-ID',{maximumFractionDigits:3});
  $('results').innerHTML='<div class="result-top"><h2>Hasil telaah soal</h2><span class="small">'+input.stimuli.length+' teks · '+input.stimuli.reduce((s,t)=>s+wordCount(t),0)+' kata</span></div><section class="overall"><div><div class="eyebrow">Skor keseluruhan</div><div class="overall-number">'+score+'<small>/100</small></div><div class="eyebrow">Rata-rata 7 kategori</div></div><div>'+badge(r.overall.label)+'<p class="reason">'+e(r.overall.reason)+'</p></div></section><div class="score-grid">'+cards+'</div>'+answerKeys+'<section class="panel result-section"><h2>Analisis Grammar</h2><p>'+e(r.grammar.summary)+'</p>'+grammarNotes+'</section><section class="panel result-section"><h2>Poin ketidaksesuaian</h2>'+issues+'</section>'+revision;
- $('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'start'});
+ lastInput=input;showStep(3);$('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+async function readServiceResponse(response,onProgress){
+ if(!response.headers?.get('content-type')?.includes('application/x-ndjson')){
+  let data;try{data=await response.json();}catch{throw new Error(response.status===404?'Layanan belum terpasang. Hubungi pengelola untuk memeriksa deployment Netlify Functions.':'Server belum dapat dihubungi. Silakan coba kembali beberapa saat lagi; isian Anda tetap tersedia.');}
+  if(!response.ok)throw new Error(data.error||'Layanan sedang sibuk. Silakan coba kembali.');
+  return data;
+ }
+ const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='',terminal=null;
+ const consume=line=>{
+  if(!line.trim())return;
+  const event=JSON.parse(line);
+  if(event.type==='progress')onProgress(event.message);
+  else if(event.type==='error')throw new Error(event.error||'Permintaan belum berhasil. Silakan coba kembali.');
+  else if(event.type==='result')terminal=event;
+ };
+ try{
+  while(true){const {value,done}=await reader.read();buffer+=decoder.decode(value,{stream:!done});let index;while((index=buffer.indexOf('\n'))>=0){consume(buffer.slice(0,index));buffer=buffer.slice(index+1);}if(done)break;}
+  if(buffer.trim())consume(buffer);
+  if(!terminal)throw new Error('Koneksi terputus sebelum hasil diterima. Silakan coba kembali; isian Anda tetap tersedia.');
+  return terminal;
+ }finally{await reader.cancel().catch(()=>{});reader.releaseLock();}
 }
 $('analysisForm').noValidate=true;
 $('analysisForm').addEventListener('submit',async event=>{
  event.preventDefault();if(busy)return;
  showStep(1);if(!validGroup('step1'))return;showStep(2);if(!validGroup('step2'))return;
- const input=payload();if([...Object.values(input.blueprint),...input.stimuli,input.question].some(v=>!v.trim())){$('errorBox').textContent='Field wajib tidak boleh hanya berisi spasi.';$('errorBox').hidden=false;return;}
- saveDraft();setBusy(true);$('results').hidden=true;$('errorBox').hidden=true;$('loadingBox').hidden=false;
+ const input=payload();if([...Object.values(input.blueprint),...input.stimuli,input.question].some(v=>!v.trim())){showStep(3);$('errorBox').textContent='Field wajib tidak boleh hanya berisi spasi.';$('errorBox').hidden=false;return;}
+ saveDraft();invalidate();showStep(3);setBusy(true);$('results').hidden=true;$('errorBox').hidden=true;$('loadingBox').hidden=false;
  const stages=['Mencocokkan kisi-kisi…','Menelaah kategori Barrett dan Bloom…','Menganalisis grammar dan tuntutan bahasa…','Meninjau kesesuaian serta kebutuhan revisi…'];let phase=0;$('loadingText').textContent=stages[0];
- const timer=setInterval(()=>{$('loadingText').textContent=stages[Math.min(++phase,stages.length-1)];},6500);
+ let serverProgress=false;const timer=setInterval(()=>{if(serverProgress)return;$('loadingText').textContent=stages[Math.min(++phase,stages.length-1)];},6500);
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),65000);
  try{
   if(location.protocol==='file:')throw new Error('Halaman terbuka sebagai file lokal. Jalankan melalui server lokal atau Netlify agar analisis dapat diakses.');
-  const response=await fetch('/.netlify/functions/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input),signal:controller.signal});
-  let data;try{data=await response.json();}catch{throw new Error('Server analisis belum tersedia. Pastikan aplikasi dipasang bersama Netlify Functions.');}
-  if(!response.ok)throw new Error(data.error||'Analisis gagal. Silakan coba lagi.');
+  const response=await fetch('/.netlify/functions/analyze',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/x-ndjson'},body:JSON.stringify(input),signal:controller.signal});
+  const data=await readServiceResponse(response,message=>{serverProgress=true;$('loadingText').textContent=message;});
   renderResult(data,input);lastInput=input;
  }catch(err){$('errorBox').textContent=err.name==='AbortError'?'Waktu tunggu habis. Input tetap tersimpan; silakan coba kembali.':err instanceof TypeError?'Tidak dapat menghubungi server. Periksa koneksi internet, lalu coba lagi.':err.message;$('errorBox').hidden=false;$('errorBox').scrollIntoView({behavior:'smooth',block:'center'});}
  finally{clearInterval(timer);clearTimeout(timeout);$('loadingBox').hidden=true;setBusy(false);}
 });
 let selectedImages=[],pendingExtraction=null;
+function startNewAnalysis(){
+ if(busy)return;
+ clearTimeout(saveTimer);
+ for(const id of fields)$(id).value='';
+ $('imageFiles').value='';$('cameraFile').value='';
+ selectedImages=[];clearExtraction();updateImagePreviews();imageMessage('');
+ second(false);invalidate();
+ $('errorBox').hidden=true;$('errorBox').textContent='';$('loadingBox').hidden=true;$('loadingText').textContent='Menyiapkan analisis…';
+ $('barrettHelp').textContent='Jenis pemahaman bacaan yang ditargetkan.';
+ try{localStorage.removeItem('analisis-butir-draft-v1');$('draftStatus').textContent='Analisis baru. Silakan isi parameter dan kisi-kisi.';}
+ catch{saveDraft();}
+ setBusy(false);showStep(1);$('type').focus();
+}
+$('startNew').onclick=startNewAnalysis;
 function imageMessage(text,error=false){$('imageMessage').textContent=text;$('imageMessage').classList.toggle('error',error);}
 function clearExtraction(){pendingExtraction=null;$('extractionReview').hidden=true;$('extractionText').textContent='';}
 function updateImagePreviews(){
@@ -175,9 +220,8 @@ $('readImages').onclick=async()=>{
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),65000);
  try{
   if(location.protocol==='file:')throw new Error('Jalankan aplikasi melalui server atau Netlify untuk membaca gambar.');
-  const response=await fetch('/.netlify/functions/read-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:selectedImages.map(({mimeType,data})=>({mimeType,data}))}),signal:controller.signal});
-  let body;try{body=await response.json();}catch{throw new Error('Layanan pembacaan gambar belum tersedia. Pastikan seluruh Netlify Functions sudah dipasang.');}
-  if(!response.ok)throw new Error(body.error||'Pembacaan belum berhasil. Coba kembali.');
+  const response=await fetch('/.netlify/functions/read-image',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/x-ndjson'},body:JSON.stringify({images:selectedImages.map(({mimeType,data})=>({mimeType,data}))}),signal:controller.signal});
+  const body=await readServiceResponse(response,message=>imageMessage(message));
   const x=body.result;if(!x?.accepted||!Array.isArray(x.stimuli)||x.stimuli.length<1||x.stimuli.length>2||!x.stimuli.every(t=>typeof t==='string'&&t.trim()&&t.length<=20000)||typeof x.question!=='string'||!x.question.trim()||x.question.length>12000)throw new Error('Hasil pembacaan belum lengkap. Coba kembali dengan foto yang lebih jelas.');
   pendingExtraction=x;$('extractionText').textContent=x.stimuli.map((t,i)=>'Stimulus — Teks '+(i+1)+'\n'+t).join('\n\n')+'\n\nPertanyaan dan opsi / instruksi\n'+x.question;$('extractionReview').hidden=false;imageMessage('Gambar dapat dibaca. Tinjau hasilnya sebelum digunakan.');
  }catch(e){imageMessage(e.name==='AbortError'?'Waktu pembacaan habis. Silakan coba kembali.':e instanceof TypeError?'Tidak dapat menghubungi layanan. Periksa koneksi internet.':e.message,true);}

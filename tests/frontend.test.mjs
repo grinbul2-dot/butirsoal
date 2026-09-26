@@ -7,7 +7,7 @@ const source=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 function runtime(){
  const elements=new Map();
  for(const [,id] of html.matchAll(/id="([^"]+)"/g))elements.set(id,{value:'',hidden:true,innerHTML:'',textContent:'',required:false,disabled:false,classList:{toggle(){}},setAttribute(){},removeAttribute(){},addEventListener(){},querySelectorAll(){return[];},scrollIntoView(){},focus(){}});
- const context=vm.createContext({document:{getElementById:id=>elements.get(id),querySelectorAll:()=>[]},localStorage:{getItem:()=>null,setItem(){}},setTimeout,clearTimeout,setInterval,clearInterval,AbortController,console});
+ const context=vm.createContext({document:{getElementById:id=>elements.get(id),querySelectorAll:()=>[]},localStorage:{getItem:()=>null,setItem(){}},setTimeout,clearTimeout,setInterval,clearInterval,AbortController,TextDecoder,console});
  vm.runInContext(source,context);
  return {context,elements};
 }
@@ -46,4 +46,27 @@ test('image reading previews before replacing input; rejection preserves existin
  elements.get('applyExtraction').onclick();assert.equal(elements.get('text1').value,'First text');assert.equal(elements.get('text2').value,'Second text');assert.equal(elements.get('question').value,'New question');
  context.fetch=async()=>({ok:false,json:async()=>({error:'File tidak didukung karena bukan soal Bahasa Inggris.'})});
  await elements.get('readImages').onclick();assert.equal(elements.get('question').value,'New question');assert.equal(elements.get('extractionReview').hidden,true);assert.match(elements.get('imageMessage').textContent,/bukan soal Bahasa Inggris/);
+});
+test('stream parser handles fragmented progress, final errors and truncated connections',async()=>{
+ const {context}=runtime();const messages=[];
+ const stream=lines=>new Response(new ReadableStream({start(c){const bytes=new TextEncoder().encode(lines);for(let i=0;i<bytes.length;i+=7)c.enqueue(bytes.slice(i,i+7));c.close();}}),{headers:{'content-type':'application/x-ndjson'}});
+ const result=await context.readServiceResponse(stream(JSON.stringify({type:'progress',message:'Mencoba ulang…'})+'\n'+JSON.stringify({type:'result',result:{ok:true}})+'\n'),m=>messages.push(m));
+ assert.equal(result.result.ok,true);assert.deepEqual(messages,['Mencoba ulang…']);
+ await assert.rejects(context.readServiceResponse(stream('{"type":"error","error":"Server masih sibuk"}\n'),()=>{}),/Server masih sibuk/);
+ await assert.rejects(context.readServiceResponse(stream('{"type":"progress","message":"Tunggu"}\n'),()=>{}),/Koneksi terputus/);
+});
+test('three pages isolate input from results; fresh start removes draft, images and all fields',()=>{
+ const {context,elements}=runtime();const storage=new Map([['analisis-butir-draft-v1','old draft']]);
+ context.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};
+ context.showStep(1);assert.equal(elements.get('step1').hidden,false);assert.equal(elements.get('step2').hidden,true);assert.equal(elements.get('step3').hidden,true);
+ context.showStep(2);assert.equal(elements.get('step1').hidden,true);assert.equal(elements.get('step2').hidden,false);
+ vm.runInContext("for(const id of fields)$(id).value='Old value';selectedImages=[{name:'old.jpg',data:'abc',mimeType:'image/jpeg'}];pendingExtraction={accepted:true};lastInput={question:'Old'};second(true);saveTimer=setTimeout(saveDraft,250);",context);
+ context.showStep(3);assert.equal(elements.get('inputWorkspace').hidden,true);assert.equal(elements.get('step3').hidden,false);assert.equal(elements.get('progressLabel').textContent,'Halaman 3 dari 3');
+ elements.get('results').innerHTML='Old result';elements.get('imageFiles').value='Old file';elements.get('cameraFile').value='Old camera';
+ elements.get('startNew').onclick();
+ assert.equal(vm.runInContext("fields.every(id=>$(id).value==='')",context),true);
+ assert.equal(vm.runInContext('selectedImages.length',context),0);assert.equal(vm.runInContext('pendingExtraction',context),null);assert.equal(vm.runInContext('lastInput',context),null);
+ assert.equal(storage.has('analisis-butir-draft-v1'),false);
+ assert.equal(elements.get('results').innerHTML,'');assert.equal(elements.get('imagePreviews').innerHTML,'');assert.equal(elements.get('imageFiles').value,'');assert.equal(elements.get('cameraFile').value,'');
+ assert.equal(elements.get('secondText').hidden,true);assert.equal(elements.get('text2').required,false);assert.equal(elements.get('step1').hidden,false);assert.equal(elements.get('inputWorkspace').hidden,false);assert.equal(elements.get('step3').hidden,true);assert.equal(elements.get('tab3').disabled,true);
 });

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateImages,validateExtraction,handler} from '../netlify/functions/read-image.mjs';
+import {validateImages,validateExtraction,handleRequest as handler} from '../netlify/functions/read-image.mjs';
 const png={mimeType:'image/png',data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jGfoAAAAASUVORK5CYII='};
 const event={httpMethod:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({images:[png]})};
 test('image validation accepts permitted signature, rejects spoofed and excessive inputs',()=>{
@@ -25,6 +25,6 @@ test('image endpoint passes real image parts and distinguishes rejection, succes
   let r=await handler(event);assert.equal(r.statusCode,422);assert.equal(JSON.parse(r.body).error,'File tidak didukung karena teks buram dan opsi B tidak terbaca.');
   extraction={accepted:true,reason:'',stimuli:['Rina helped a woman.'],question:'Who helped the woman? A. Rina B. Dina'};
   r=await handler(event);assert.equal(r.statusCode,200);assert.equal(JSON.parse(r.body).result.question,extraction.question);
-  global.fetch=async()=>({ok:false,status:429});r=await handler(event);assert.equal(r.statusCode,429);assert.ok(!r.body.includes('File tidak didukung'));
+  global.fetch=async()=>({ok:false,status:401});r=await handler(event);assert.equal(r.statusCode,503);assert.ok(!r.body.includes('File tidak didukung'));
  }finally{global.fetch=oldFetch;if(oldKey)process.env.GEMINI_API_KEY=oldKey;else delete process.env.GEMINI_API_KEY;}
 });

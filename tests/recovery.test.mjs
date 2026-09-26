@@ -1,0 +1,45 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {generateWithRecovery} from '../netlify/functions/lib/recovery.mjs';
+import {endpoint,reply} from '../netlify/functions/lib/transport.mjs';
+const ok=value=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(value)}]}}]})});
+async function scenario(sequence,options={}){
+ const old={...process.env};process.env.GEMINI_API_KEY='test-key';process.env.GEMINI_MODEL='primary';process.env.GEMINI_FALLBACK_MODEL='backup';
+ let time=0;const calls=[],delays=[],messages=[];
+ try{
+  const run=()=>generateWithRecovery({body:{},validate:x=>x,onProgress:x=>messages.push(x),...options},{now:()=>time,sleep:async ms=>{delays.push(ms);time+=ms;},fetch:async(url,opts)=>{calls.push(url);const next=sequence[Math.min(calls.length-1,sequence.length-1)];if(next instanceof Error)throw next;if(typeof next==='function')return next({advance:ms=>time+=ms,opts});return next;}});
+  let result,error;try{result=await run();}catch(e){error=e;}
+  return {result,error,calls,delays,messages};
+ }finally{for(const name of ['GEMINI_API_KEY','GEMINI_MODEL','GEMINI_FALLBACK_MODEL']){if(old[name]===undefined)delete process.env[name];else process.env[name]=old[name];}}
+}
+test('transient failures retry with 1s 2s 4s before fallback',async()=>{
+ const r=await scenario([{ok:false,status:503},{ok:false,status:429},new TypeError('network'),{ok:false,status:500},ok({done:true})]);
+ assert.equal(r.result.done,true);assert.deepEqual(r.delays,[1000,2000,4000]);assert.equal(r.calls.length,5);assert.match(r.calls[4],/backup/);assert.match(r.messages[0],/mencoba ulang otomatis/);assert.match(r.messages[3],/cadangan/);assert.ok(!r.messages.join().includes('primary'));
+});
+test('successful retry stops calls and permanent errors do not retry',async()=>{
+ const r=await scenario([{ok:false,status:503},ok({done:true})]);assert.equal(r.calls.length,2);assert.deepEqual(r.delays,[1000]);
+ for(const status of [400,401,403]){const x=await scenario([{ok:false,status}]);assert.equal(x.calls.length,1);assert.equal(x.error.status,503);}
+});
+test('exhaustion is bounded, Retry-After respected, unavailable model falls back directly',async()=>{
+ const r=await scenario([{ok:false,status:429}]);assert.equal(r.calls.length,8);assert.deepEqual(r.delays,[1000,2000,4000,1000,2000,4000]);assert.equal(r.error.status,429);
+ const x=await scenario([{ok:false,status:429,headers:new Headers({'Retry-After':'3'})},ok({})]);assert.deepEqual(x.delays,[3000]);
+ const y=await scenario([{ok:false,status:404},ok({})]);assert.equal(y.calls.length,2);assert.deepEqual(y.delays,[]);
+});
+test('time budget reserves fallback and avoids sleeping past deadlines',async()=>{
+ const r=await scenario([({advance})=>{advance(31500);return {ok:false,status:503};},ok({done:true})]);assert.equal(r.calls.length,2);assert.match(r.calls[1],/backup/);assert.deepEqual(r.delays,[]);
+});
+test('rejected images and safety blocks are not retried; malformed output is',async()=>{
+ const r=await scenario([ok({accepted:false,reason:'buram'})]);assert.equal(r.calls.length,1);assert.equal(r.result.accepted,false);
+ const x=await scenario([{ok:true,json:async()=>({candidates:[{finishReason:'SAFETY'}]})}]);assert.equal(x.calls.length,1);assert.equal(x.error.status,422);
+ const y=await scenario([{ok:true,json:async()=>{throw new SyntaxError('bad');}},ok({})]);assert.equal(y.calls.length,2);
+ const controller=new AbortController();controller.abort();const z=await scenario([ok({})],{signal:controller.signal});assert.equal(z.calls.length,0);
+});
+test('native endpoint streams real progress before completion and preserves JSON status',async()=>{
+ let finish;const gate=new Promise(resolve=>finish=resolve);
+ const fn=endpoint(async(_event,progress)=>{progress('Mencoba ulang');await gate;return reply(200,{result:{done:true}});});
+ const response=await fn(new Request('https://example.test',{headers:{Accept:'application/x-ndjson'}}));const reader=response.body.getReader();
+ assert.match(new TextDecoder().decode((await reader.read()).value),/Permintaan diterima/);
+ assert.match(new TextDecoder().decode((await reader.read()).value),/Mencoba ulang/);
+ finish();assert.match(new TextDecoder().decode((await reader.read()).value),/"type":"result"/);assert.equal((await reader.read()).done,true);
+ const error=await endpoint(async()=>reply(503,{error:'Konfigurasi belum lengkap'}))(new Request('https://example.test'));assert.equal(error.status,503);
+});

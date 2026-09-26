@@ -6,6 +6,27 @@ Aplikasi untuk guru Bahasa Inggris: satu butir soal dibandingkan dengan kisi-kis
 
 Implementasi frontend, Netlify Function, rubrik, dan tes kontrak sudah tersedia. Paket ini belum diterbitkan ke akun Netlify pengguna. Pengujian Gemini langsung memerlukan API key yang valid dan kuota model pada akun pengguna. Tidak ada API key di dalam paket.
 
+## Pembaruan v1.4.0
+
+Aplikasi memiliki tiga halaman tampilan terpisah dalam satu aplikasi:
+1. Parameter dan kisi-kisi.
+2. Input teks, unggah gambar/kamera, dan butir soal.
+3. Progres analisis, pesan kegagalan bila ada, serta hasil analisis dan telaah.
+
+Tombol **START NEW ANALYSIS** di halaman 3 menghapus semua parameter, kisi-kisi, teks, gambar, hasil pembacaan, hasil telaah, dan draf lokal aplikasi. Aplikasi kembali ke halaman 1 kosong. Tombol dinonaktifkan saat proses masih berjalan. Tombol Kembali ke Butir Soal memungkinkan koreksi tanpa menghapus isian. Halaman telaah dapat dibuka kembali melalui navigasi selama isian belum diubah.
+
+## Pembaruan v1.3.0
+
+- Analisis dan pembacaan gambar menggunakan retry gangguan sementara (429, 408, 5xx, jaringan, hasil tidak lengkap) maksimal tiga kali per model, dengan jeda 1 → 2 → 4 detik. Header Retry-After dihormati jika meminta jeda lebih panjang.
+- Setelah layanan utama gagal atau model tidak ditemukan, otomatis beralih ke model cadangan. Default `GEMINI_FALLBACK_MODEL=gemini-3.5-flash-lite`; dapat diganti lewat environment Netlify.
+- Budget total 54 detik; fase utama maksimal 32 detik agar tersedia waktu untuk cadangan. Retry bisa dihentikan lebih awal jika budget tidak mencukupi. Model utama dan cadangan yang sama tidak dipanggil sebagai dua fase terpisah.
+- Pesan progres dikirim melalui streaming NDJSON pada Functions v2, bukan hanya animasi waktu. Identitas model tidak ditampilkan kepada pengguna.
+- Input tidak valid, konfigurasi/key salah, pembatasan keamanan, output terpotong karena panjang, serta gambar yang ditolak tidak dicoba ulang otomatis.
+- Browser tidak mengulangi seluruh request; server yang mengelola retry agar tidak terjadi penggandaan percobaan. Percobaan tambahan dapat memakai kuota/biaya tambahan. Fallback tidak menjamin berhasil jika kuota akun habis atau kedua layanan terganggu.
+- Kedua model memakai rubrik, schema, dan validasi hasil yang sama. Tidak ada skor atau transkripsi buatan sebagai pengganti kegagalan.
+
+Dokumentasi kompatibilitas: [Netlify streaming Functions](https://docs.netlify.com/build/functions/api/) dan [Gemini 3.5 Flash-Lite](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite). Akses model pada API key pengguna tetap harus diuji.
+
 ## Pembaruan v1.2.0
 
 - Hasil telaah tidak lagi menampilkan label AI, nama model/penyedia, atau footer metadata.
@@ -32,7 +53,7 @@ KD/Indikator dan Deskripsi/Ruang Lingkup digabung menjadi satu kolom **Kisi-kisi
 
 ## Yang sudah dibuat
 
-- Form dua langkah: Kisi-Kisi dan Butir Soal.
+- Tiga halaman: Parameter & Kisi-kisi, Butir Soal, serta Analisis & Telaah.
 - Tipe soal berupa teks bebas; mendukung PG, PG kompleks/kategori, isian, matching, uraian, dan tipe lain melalui instruksi AI.
 - Enam parameter kisi-kisi wajib, kelas 1–12 opsional, 1 atau 2 stimulus.
 - Jumlah kata informatif; tidak menjadi skor tersendiri.
@@ -54,7 +75,7 @@ KD/Indikator dan Deskripsi/Ruang Lingkup digabung menjadi satu kolom **Kisi-kisi
 3. Di Netlify, pilih penambahan proyek dengan mengimpor repository tersebut.
 4. Gunakan konfigurasi:
    - Base directory: kosong, jika file proyek berada di root repository.
-   - Build command: kosong; frontend tidak memerlukan build.
+   - Build command: `npm test`; frontend tidak memerlukan kompilasi.
    - Publish directory: `public`.
    - Functions directory: `netlify/functions` (sudah diatur dalam `netlify.toml`).
    - Jika proyek berada di subfolder repository, jadikan subfolder itu sebagai Base directory.
@@ -64,6 +85,7 @@ KD/Indikator dan Deskripsi/Ruang Lingkup digabung menjadi satu kolom **Kisi-kisi
    |---|---|---|
    | `GEMINI_API_KEY` | API key dari Google AI Studio | Functions / semua cakupan yang mencakup Functions |
    | `GEMINI_MODEL` | `gemini-3.5-flash` | Functions / semua cakupan yang mencakup Functions |
+   | `GEMINI_FALLBACK_MODEL` | `gemini-3.5-flash-lite` (opsional) | Functions / semua cakupan yang mencakup Functions |
 
    Model dapat diganti melalui variabel `GEMINI_MODEL` tanpa mengubah frontend. Pastikan model yang dipilih mendukung generateContent dan structured JSON output. Default yang diverifikasi pada pengerjaan adalah Gemini 3.5 Flash; bukan jaminan akses/kuota pada setiap akun.
 6. Lakukan deploy. Setelah mengubah environment variables, deploy ulang agar function menggunakan konfigurasi baru.
