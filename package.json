@@ -1,0 +1,9 @@
+{
+  "name": "analisis-butir-soal",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Analisis satu soal Bahasa Inggris terhadap kisi-kisi dengan Gemini, Barrett, dan Bloom",
+  "engines": {"node": ">=22"},
+  "scripts": {"test": "node --test tests/*.test.mjs", "dev": "node dev-server.mjs"}
+}
