@@ -13,7 +13,7 @@ async function scenario(sequence,options={}){
  }finally{for(const name of ['GEMINI_API_KEY','GEMINI_MODEL','GEMINI_FALLBACK_MODEL']){if(old[name]===undefined)delete process.env[name];else process.env[name]=old[name];}}
 }
 test('transient failures retry with 1s 2s 4s before fallback',async()=>{
- const r=await scenario([{ok:false,status:503},{ok:false,status:429},new TypeError('network'),{ok:false,status:500},ok({done:true})]);
+ const r=await scenario([{ok:false,status:503},{ok:false,status:503},new TypeError('network'),{ok:false,status:500},ok({done:true})]);
  assert.equal(r.result.done,true);assert.deepEqual(r.delays,[1000,2000,4000]);assert.equal(r.calls.length,5);assert.match(r.calls[4],/backup/);assert.match(r.messages[0],/mencoba ulang otomatis/);assert.match(r.messages[3],/cadangan/);assert.ok(!r.messages.join().includes('primary'));
 });
 test('successful retry stops calls and permanent errors do not retry',async()=>{
@@ -21,12 +21,12 @@ test('successful retry stops calls and permanent errors do not retry',async()=>{
  for(const status of [400,401,403]){const x=await scenario([{ok:false,status}]);assert.equal(x.calls.length,1);assert.equal(x.error.status,503);}
 });
 test('exhaustion is bounded, Retry-After respected, unavailable model falls back directly',async()=>{
- const r=await scenario([{ok:false,status:429}]);assert.equal(r.calls.length,8);assert.deepEqual(r.delays,[1000,2000,4000,1000,2000,4000]);assert.equal(r.error.status,429);
- const x=await scenario([{ok:false,status:429,headers:new Headers({'Retry-After':'3'})},ok({})]);assert.deepEqual(x.delays,[3000]);
+ const r=await scenario([{ok:false,status:429}]);assert.equal(r.calls.length,5);assert.match(r.calls[1],/backup/);assert.deepEqual(r.delays,[1000,2000,4000]);assert.equal(r.error.status,429);
+ const x=await scenario([{ok:false,status:503,headers:new Headers({'Retry-After':'3'})},ok({})]);assert.deepEqual(x.delays,[3000]);
  const y=await scenario([{ok:false,status:404},ok({})]);assert.equal(y.calls.length,2);assert.deepEqual(y.delays,[]);
 });
-test('time budget reserves fallback and avoids sleeping past deadlines',async()=>{
- const r=await scenario([({advance})=>{advance(31500);return {ok:false,status:503};},ok({done:true})]);assert.equal(r.calls.length,2);assert.match(r.calls[1],/backup/);assert.deepEqual(r.delays,[]);
+test('25-second budget stops requests before platform timeout',async()=>{
+ const r=await scenario([({advance})=>{advance(24500);return {ok:false,status:503};},ok({done:true})]);assert.equal(r.calls.length,1);assert.deepEqual(r.delays,[]);assert.ok(r.error);
 });
 test('rejected images and safety blocks are not retried; malformed output is',async()=>{
  const r=await scenario([ok({accepted:false,reason:'buram'})]);assert.equal(r.calls.length,1);assert.equal(r.result.accepted,false);

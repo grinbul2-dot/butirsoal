@@ -6,6 +6,12 @@ Aplikasi untuk guru Bahasa Inggris: satu butir soal dibandingkan dengan kisi-kis
 
 Implementasi frontend, Netlify Function, rubrik, dan tes kontrak sudah tersedia. Paket ini belum diterbitkan ke akun Netlify pengguna. Pengujian Gemini langsung memerlukan API key yang valid dan kuota model pada akun pengguna. Tidak ada API key di dalam paket.
 
+## Perbaikan v1.6.2
+
+Log produksi menunjukkan UPSTREAM_429 berulang, INVALID_OUTPUT, lalu Duration 30000 ms. Budget pemanggilan kini 25 detik untuk menyisakan waktu pengiriman respons sebelum batas 30 detik yang teramati. Saat layanan utama mengembalikan 429, langsung coba cadangan tanpa menghabiskan jeda retry utama. Gangguan sementara lain tetap memakai retry 1/2/4 detik selama budget tersedia. Permintaan utama yang lambat dapat menghabiskan budget sehingga fallback tidak sempat dilakukan.
+
+Kode validasi kini membedakan struktur umum, jumlah kriteria, kutipan kriteria, serta pernyataan/bukti kunci kategori. Log tidak memuat isi soal atau API key. Validasi rubrik tetap dipertahankan. Perubahan ini membatasi timeout dan membantu diagnosis; belum membuktikan kualitas atau keberhasilan analisis produksi. Kuota/batas permintaan layanan perlu diperiksa pada proyek API yang dipakai.
+
 ## Perbaikan v1.6.1
 
 Pengiriman hasil kini memakai satu respons JSON lengkap setelah pemrosesan selesai, bukan streaming progres. Backend juga melayani frontend lama yang masih meminta NDJSON dengan JSON utuh. Retry dan model cadangan tetap berjalan di server. Halaman menampilkan status menunggu dan penjelasan retry; tidak mengklaim mengetahui percobaan yang sedang berlangsung.

@@ -24,18 +24,18 @@ export function validateInput(data){
  if(!nonempty(data.question,12000)) throw new InputError('Isi pertanyaan beserta opsi/instruksi (maksimal 12.000 karakter).');
  return {blueprint:Object.fromEntries(['type','genre','barrett','kisi','bloom','cefr'].map(k=>[k,b[k].trim()])),grade:data.grade??null,stimuli:data.stimuli.map(s=>s.trim()),question:data.question.trim()};
 }
-function assert(ok){if(!ok)throw new Error('INVALID_MODEL_OUTPUT');}
+function assert(ok,code='STRUCTURE'){if(!ok)throw new Error('INVALID_OUTPUT_'+code);}
 const norm=s=>s.normalize('NFKC').replace(/\s+/g,' ').trim();
 function checkKey(k,input){
  assert(k&&['Ditentukan','Ambigu','Informasi tidak cukup','Contoh jawaban'].includes(k.status)&&nonempty(k.answer)&&nonempty(k.explanation)&&Array.isArray(k.rows));
  const matrix=/kategori|category|categorical|true\s*\/\s*false|benar\s*\/\s*salah/i.test(input.blueprint.type);
- if(matrix)assert(k.rows.length>0);
+ if(matrix)assert(k.rows.length>0,'CATEGORY_ROWS');
  const seen=new Set();
  for(const row of k.rows){
   assert(nonempty(row.statement)&&nonempty(row.answer)&&nonempty(row.explanation)&&['Ditentukan','Ambigu','Informasi tidak cukup'].includes(row.status)&&typeof row.evidence==='string');
-  assert(norm(input.question).includes(norm(row.statement))&&!seen.has(norm(row.statement)));seen.add(norm(row.statement));
-  if(row.evidence)assert(input.stimuli.some(s=>norm(s).includes(norm(row.evidence))));
-  if(row.status==='Ditentukan')assert(nonempty(row.evidence));
+  assert(norm(input.question).includes(norm(row.statement))&&!seen.has(norm(row.statement)),'ROW_STATEMENT');seen.add(norm(row.statement));
+  if(row.evidence)assert(input.stimuli.some(s=>norm(s).includes(norm(row.evidence))),'ROW_EVIDENCE');
+  if(row.status==='Ditentukan')assert(nonempty(row.evidence),'ROW_EVIDENCE_MISSING');
  }
  if(k.rows.some(r=>r.status==='Informasi tidak cukup'))k.status='Informasi tidak cukup';
  else if(k.rows.some(r=>r.status==='Ambigu'))k.status='Ambigu';
@@ -46,13 +46,13 @@ export function validateOutput(x,input){
  const ids=CATEGORIES.map(c=>c[0]);
  assert(new Set(x.categories.map(c=>c.id)).size===CATEGORIES.length);
  for(const c of x.categories){
-  assert(ids.includes(c.id)&&Array.isArray(c.criteria)&&c.criteria.length===4);
+  assert(ids.includes(c.id)&&Array.isArray(c.criteria)&&c.criteria.length===4,'CRITERIA_COUNT');
   assert(new Set(c.criteria.map(r=>r.index)).size===4);
   const sources=[...input.stimuli,input.question,...Object.values(input.blueprint)];
   for(const r of c.criteria){
    assert(Number.isInteger(r.index)&&r.index>=1&&r.index<=4&&Number.isInteger(r.level)&&r.level>=0&&r.level<=4&&nonempty(r.reason)&&typeof r.quote==='string');
-   if(r.level>0)assert(nonempty(r.quote));
-   if(r.quote)assert(sources.some(s=>norm(s).includes(norm(r.quote))));
+   if(r.level>0)assert(nonempty(r.quote),'CRITERION_EVIDENCE_MISSING');
+   if(r.quote)assert(sources.some(s=>norm(s).includes(norm(r.quote))),'CRITERION_QUOTE');
    r.criterion=CRITERIA[c.id][r.index-1];
   }
   c.criteria.sort((a,b)=>a.index-b.index);
