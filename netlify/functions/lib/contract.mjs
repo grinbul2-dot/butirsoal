@@ -25,7 +25,7 @@ export function validateInput(data){
  return {blueprint:Object.fromEntries(['type','genre','barrett','kisi','bloom','cefr'].map(k=>[k,b[k].trim()])),grade:data.grade??null,stimuli:data.stimuli.map(s=>s.trim()),question:data.question.trim()};
 }
 function assert(ok,code='STRUCTURE'){if(!ok)throw new Error('INVALID_OUTPUT_'+code);}
-const norm=s=>s.normalize('NFKC').replace(/\s+/g,' ').trim();
+const norm=s=>s.normalize('NFKC').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();
 function checkKey(k,input){
  assert(k&&['Ditentukan','Ambigu','Informasi tidak cukup','Contoh jawaban'].includes(k.status)&&nonempty(k.answer)&&nonempty(k.explanation)&&Array.isArray(k.rows));
  const matrix=/kategori|category|categorical|true\s*\/\s*false|benar\s*\/\s*salah/i.test(input.blueprint.type);
@@ -51,8 +51,9 @@ export function validateOutput(x,input){
   const sources=[...input.stimuli,input.question,...Object.values(input.blueprint)];
   for(const r of c.criteria){
    assert(Number.isInteger(r.index)&&r.index>=1&&r.index<=4&&Number.isInteger(r.level)&&r.level>=0&&r.level<=4&&nonempty(r.reason)&&typeof r.quote==='string');
-   if(r.level>0)assert(nonempty(r.quote),'CRITERION_EVIDENCE_MISSING');
-   if(r.quote)assert(sources.some(s=>norm(s).includes(norm(r.quote))),'CRITERION_QUOTE');
+   const quote=norm(r.quote).replace(/^["']|["']$/g,'').trim();
+   r.evidenceVerified=!!quote&&sources.some(s=>norm(s).includes(quote));
+   r.evidenceWarning=r.evidenceVerified?'':r.quote.trim()?'Kutipan belum cocok dengan teks sumber. Periksa alasan dan bukti sebelum memakai penilaian ini.':'Kutipan bukti belum tersedia. Periksa penilaian ini terhadap teks sumber.';
    r.criterion=CRITERIA[c.id][r.index-1];
   }
   c.criteria.sort((a,b)=>a.index-b.index);
@@ -71,6 +72,8 @@ export function validateOutput(x,input){
  if(x.categories.some(c=>c.score<75)||x.issues.length||x.grammar.notes.length)limit('Sesuai','Label Sangat Sesuai memerlukan semua kategori minimal 75 dan tidak ada temuan material atau kesalahan grammar.');
  if(x.categories.some(c=>c.score<50))limit('Kurang Sesuai','Ada kategori di bawah 50 yang memerlukan perbaikan mendasar.');
  if(['Ambigu','Informasi tidak cukup'].includes(x.answerKey.status))limit('Kurang Sesuai','Kunci belum dapat dipastikan; periksa bukti dan kejelasan soal sebelum digunakan.');
+ const unverified=x.categories.flatMap(c=>c.criteria).filter(r=>!r.evidenceVerified&&r.level>0).length;
+ if(unverified)limit('Kurang Sesuai',unverified+' kriteria memiliki bukti yang belum terverifikasi. Skor bersifat sementara dan perlu ditinjau terhadap teks sumber.');
  if(x.overall.label==='Sangat Sesuai')delete x.revision;
  else{const r=x.revision;assert(r&&Array.isArray(r.stimuli)&&r.stimuli.length===input.stimuli.length&&r.stimuli.every(s=>nonempty(s))&&nonempty(r.question)&&nonempty(r.rationale));checkKey(r.answerKey,{...input,stimuli:r.stimuli,question:r.question});}
  x.categories.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));

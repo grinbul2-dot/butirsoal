@@ -26,9 +26,9 @@ test('rubric score boundaries and label caps are deterministic',()=>{
  const b=output();b.categories.forEach(c=>c.criteria.forEach(r=>r.level=4));b.issues=[{category:'type',location:'Opsi',explanation:'Ada masalah material',suggestion:'Perbaiki'}];
  assert.equal(validateOutput(b,input).overall.label,'Sesuai');
 });
-test('fabricated quotes and missing criterion evidence rejected',()=>{
- const x=output();x.categories[0].criteria[0].quote='The dragon flew away.';assert.throws(()=>validateOutput(x,input));
- const y=output();y.categories[0].criteria[0].quote='';assert.throws(()=>validateOutput(y,input));
+test('unmatched or missing criterion quotes flag provisional result instead of discarding analysis',()=>{
+ const x=output();x.categories[0].criteria[0].quote='The dragon flew away.';const result=validateOutput(x,input);assert.equal(result.categories[0].criteria[0].evidenceVerified,false);assert.equal(result.overall.label,'Kurang Sesuai');assert.match(result.overall.rules.join(' '),/sementara/);
+ const y=output();y.categories[0].criteria[0].quote='';assert.equal(validateOutput(y,input).categories[0].criteria[0].evidenceVerified,false);
  const z=output();z.categories[0].criteria[0].quote='';z.categories[0].criteria[0].level=0;assert.doesNotThrow(()=>validateOutput(z,input));
 });
 test('category question requires row keys, checks evidence and propagates uncertainty',()=>{
@@ -39,4 +39,8 @@ test('category question requires row keys, checks evidence and propagates uncert
  const missing=output();assert.throws(()=>validateOutput(missing,matrix));
  const wrong=structuredClone(x);wrong.answerKey.rows[0].evidence='Imaginary evidence';assert.throws(()=>validateOutput(wrong,matrix));
  const duplicate=structuredClone(x);duplicate.answerKey.rows.push(duplicate.answerKey.rows[0]);assert.throws(()=>validateOutput(duplicate,matrix));
+});
+test('typographic punctuation and whitespace do not invalidate real quotes',()=>{
+ const source={...input,stimuli:["Rina’s cat is small."]};const x=output();x.categories.forEach(c=>c.criteria.forEach(r=>r.quote="“Rina's   cat is small.”"));
+ const result=validateOutput(x,source);assert.equal(result.categories[0].criteria[0].evidenceVerified,true);assert.equal(result.overall.label,'Sesuai');
 });

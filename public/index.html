@@ -88,7 +88,7 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 <section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Mohon tunggu. Jika layanan sibuk, server mencoba ulang otomatis. Hasil dikirim setelah pemeriksaan selesai.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section>
 <section id="results" class="results" aria-label="Hasil analisis" hidden></section>
 </section>
-<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v1.6.2</span></footer>
+<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v1.6.3</span></footer>
 </main>
 <script>
 'use strict';
@@ -148,7 +148,7 @@ function renderResult(data,input){
  const r=data.result;
  if(!r||!Array.isArray(r.categories)||r.categories.length!==Object.keys(names).length||!r.answerKey||!r.overall||!r.grammar||!Array.isArray(r.issues))throw new Error('Hasil analisis tidak lengkap. Silakan coba lagi.');
  const e=escapeHTML;
- const criteriaBlock=c=>c.criteria?.length?'<details><summary>Rincian rubrik</summary>'+c.criteria.map(k=>'<div class="note-item"><strong>'+e(k.index)+'. '+e(k.criterion)+' — '+e(k.level)+'/4</strong><p>'+e(k.reason)+'</p>'+(k.quote?'<p class="quote">'+e(k.quote)+'</p>':'<p class="small">Bukti tidak tersedia.</p>')+'</div>').join('')+'</details>':'';
+ const criteriaBlock=c=>c.criteria?.length?'<details><summary>Rincian rubrik</summary>'+c.criteria.map(k=>'<div class="note-item"><strong>'+e(k.index)+'. '+e(k.criterion)+' — '+e(k.level)+'/4</strong><p>'+e(k.reason)+'</p>'+(k.evidenceWarning?'<p class="notice">'+e(k.evidenceWarning)+'</p>':'')+(k.quote?'<p class="quote">'+e(k.quote)+'</p>':'<p class="small">Bukti tidak tersedia.</p>')+'</div>').join('')+'</details>':'';
  const rowBlock=key=>key.rows?.length?'<div class="rubric-table"><table><thead><tr><th>Pernyataan</th><th>Kunci / status</th><th>Alasan dan bukti</th></tr></thead><tbody>'+key.rows.map(row=>'<tr><td>'+e(row.statement)+'</td><td><strong>'+e(row.answer)+'</strong><br>'+e(row.status)+'</td><td>'+e(row.explanation)+(row.evidence?'<p class="quote">'+e(row.evidence)+'</p>':'')+'</td></tr>').join('')+'</tbody></table></div>':'';
  const cards=r.categories.map(c=>'<article class="score-card"><h3>'+e(names[c.id])+'</h3><div class="score-value">'+e(c.score)+'<small>/100</small></div>'+badge(c.label)+'<details><summary>Alasan skor</summary><span class="detail-label">Target</span><p>'+e(c.target)+'</p><span class="detail-label">Teridentifikasi</span><p>'+e(c.identified)+'</p><p>'+e(c.analysis)+'</p><span class="detail-label">Bukti / Dasar</span><p>'+e(c.evidence)+'</p></details>'+criteriaBlock(c)+'</article>').join('');
  const keyBlock=(key,title)=>'<section class="panel result-section"><h2>'+e(title)+'</h2><p class="answer-status">'+e(key.status)+'</p><p class="answer-text">'+e(key.answer)+'</p><p>'+e(key.explanation)+'</p>'+rowBlock(key)+'</section>';
