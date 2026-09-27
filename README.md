@@ -6,6 +6,12 @@ Aplikasi untuk guru Bahasa Inggris: satu butir soal dibandingkan dengan kisi-kis
 
 Implementasi frontend, Netlify Function, rubrik, dan tes kontrak sudah tersedia. Paket ini belum diterbitkan ke akun Netlify pengguna. Pengujian Gemini langsung memerlukan API key yang valid dan kuota model pada akun pengguna. Tidak ada API key di dalam paket.
 
+## Pembaruan v1.7.1
+
+Revisi diarahkan untuk memperbaiki seluruh parameter yang tidak sesuai. Jika tuntutan bahasa tidak sesuai target CEFR, stimulus, stem, opsi dan instruksi disesuaikan ke target (lebih sederhana atau lebih kompleks sesuai kebutuhan). Fakta inti, kunci, genre dan konstruk Barrett/Bloom dijaga. Rationale menjelaskan perubahan nyata serta konflik parameter jika ada. Ketidaksesuaian material termasuk CEFR harus menghasilkan revisi, bukan label Sangat Sesuai.
+
+Ini penguatan instruksi analisis, tanpa mengembalikan rubrik 28 kriteria. Ketepatan adaptasi bahasa perlu ditinjau guru; belum diuji dengan API produksi.
+
 ## Pembaruan v1.7.0 — kembali ke analisis sebelum rubrik tambahan
 
 Atas permintaan pengguna, penilaian 28 kriteria, level 0–4, pemeriksaan kecocokan kutipan, pembatasan label otomatis, dan halaman rubrik tambahan dihapus. Format hasil kembali ke tujuh skor langsung, label, alasan, kunci dan revisi opsional seperti sebelum v1.6.0. Referensi dasar Barrett, Bloom dan CEFR tetap digunakan karena merupakan bagian dari fungsi awal aplikasi.
