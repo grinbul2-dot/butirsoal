@@ -6,37 +6,15 @@ Aplikasi untuk guru Bahasa Inggris: satu butir soal dibandingkan dengan kisi-kis
 
 Implementasi frontend, Netlify Function, rubrik, dan tes kontrak sudah tersedia. Paket ini belum diterbitkan ke akun Netlify pengguna. Pengujian Gemini langsung memerlukan API key yang valid dan kuota model pada akun pengguna. Tidak ada API key di dalam paket.
 
-## Perbaikan v1.6.3
+## Pembaruan v1.7.0 — kembali ke analisis sebelum rubrik tambahan
 
-INVALID_OUTPUT_CRITERION_QUOTE kini tidak menggagalkan seluruh analisis. Normalisasi mencakup spasi, bentuk Unicode, apostrof, tanda kutip dan tanda pisah tipografis. Bukti kriteria yang tetap tidak cocok atau kosong ditandai belum terverifikasi. Jika levelnya positif, skor sementara dan label maksimal Kurang Sesuai, dengan alasan terlihat. Pemeriksaan struktur, level, kunci per baris dan revisi tetap berlaku. Bukti yang belum cocok bukan bukti bahwa isi soalnya salah. Perubahan ini mengatasi penolakan kutipan, bukan kuota atau seluruh kemungkinan timeout.
+Atas permintaan pengguna, penilaian 28 kriteria, level 0–4, pemeriksaan kecocokan kutipan, pembatasan label otomatis, dan halaman rubrik tambahan dihapus. Format hasil kembali ke tujuh skor langsung, label, alasan, kunci dan revisi opsional seperti sebelum v1.6.0. Referensi dasar Barrett, Bloom dan CEFR tetap digunakan karena merupakan bagian dari fungsi awal aplikasi.
 
-## Perbaikan v1.6.2
+Revisi hanya diminta ketika label keseluruhan bukan Sangat Sesuai. Tidak lagi ada kewajiban menghasilkan 28 rincian penilaian dan menyalin revisi untuk soal yang sudah sangat sesuai.
 
-Log produksi menunjukkan UPSTREAM_429 berulang, INVALID_OUTPUT, lalu Duration 30000 ms. Budget pemanggilan kini 25 detik untuk menyisakan waktu pengiriman respons sebelum batas 30 detik yang teramati. Saat layanan utama mengembalikan 429, langsung coba cadangan tanpa menghabiskan jeda retry utama. Gangguan sementara lain tetap memakai retry 1/2/4 detik selama budget tersedia. Permintaan utama yang lambat dapat menghabiskan budget sehingga fallback tidak sempat dilakukan.
+Alur tiga halaman, START NEW ANALYSIS, Clear, gambar/kamera, tautan OCR alternatif, dan tampilan v1.5 tetap dipertahankan. Pengiriman JSON utuh, budget 25 detik, serta fallback langsung saat 429 juga dipertahankan agar masalah teknis lama tidak dikembalikan. Ini rollback lapisan rubrik, bukan seluruh perbaikan teknis.
 
-Kode validasi kini membedakan struktur umum, jumlah kriteria, kutipan kriteria, serta pernyataan/bukti kunci kategori. Log tidak memuat isi soal atau API key. Validasi rubrik tetap dipertahankan. Perubahan ini membatasi timeout dan membantu diagnosis; belum membuktikan kualitas atau keberhasilan analisis produksi. Kuota/batas permintaan layanan perlu diperiksa pada proyek API yang dipakai.
-
-## Perbaikan v1.6.1
-
-Pengiriman hasil kini memakai satu respons JSON lengkap setelah pemrosesan selesai, bukan streaming progres. Backend juga melayani frontend lama yang masih meminta NDJSON dengan JSON utuh. Retry dan model cadangan tetap berjalan di server. Halaman menampilkan status menunggu dan penjelasan retry; tidak mengklaim mengetahui percobaan yang sedang berlangsung.
-
-Perbaikan ini menghilangkan ketergantungan pada streaming yang berakhir tanpa pesan terminal. Penyebab spesifik kegagalan produksi belum dikonfirmasi karena URL/log/API key pengguna belum tersedia.
-
-Error akhir dibedakan dengan kode TIME_LIMIT, INVALID_OUTPUT, MODEL_NOT_AVAILABLE, UPSTREAM_429, atau NETWORK_OR_RESPONSE. Function logs mencatat kode, status, nomor percobaan, fase cadangan, dan durasi tanpa API key, teks soal, gambar, atau keluaran penyedia.
-
-Setelah memperbarui seluruh proyek dan deploy ulang, pastikan footer menunjukkan v1.6.1. Jika gagal, catat pesan/kode, URL situs, durasi tunggu, serta log pada waktu permintaan.
-
-## Pembaruan v1.6.0
-
-Rubrik lengkap dapat dibuka melalui **Baca rubrik penilaian lengkap** di aplikasi atau file `public/rubrik.html`. Rubrik terdiri dari 7 kategori × 4 kriteria, level 0–4 dengan alasan dan kutipan. Server menghitung skor kategori serta label; skor dari penyedia tidak dipakai. Keberadaan kutipan diperiksa terhadap input, tetapi kesesuaian maknanya tetap memerlukan telaah.
-
-Label dasar: ≥90 Sangat Sesuai, ≥75 Sesuai, ≥50 Kurang Sesuai, <50 Tidak Sesuai. Label akhir dibatasi jika kunci belum pasti, kategori sangat lemah, atau ada temuan material; alasannya tampil di hasil. Rata-rata angka tetap ditampilkan apa adanya.
-
-PG kompleks kategori memiliki kunci, status, alasan dan bukti per baris. Prompt pembacaan gambar mempertahankan baris dan kolom kategorinya. Hasil juga menampilkan rincian empat kriteria per kategori.
-
-Retry/fallback tetap dipertahankan sesuai permintaan sebelumnya. Keduanya memakai rubrik yang sama; interpretasi tetap dapat bervariasi. Temperature ditetapkan 1 sesuai panduan Gemini 3 (https://ai.google.dev/gemini-api/docs/generate-content/gemini-3), bukan diturunkan untuk menjanjikan determinisme. Belum ada uji akurasi dengan soal acuan guru atau API langsung.
-
-Untuk memperbarui dokumen setelah mengubah definisi kriteria: `node scripts/export-rubric.mjs`. Formula di dokumen harus tetap diselaraskan dengan contract.mjs.
+Saat memperbarui GitHub, hapus juga public/rubrik.html dan scripts/export-rubric.mjs dari repository lama. Keduanya tidak disertakan lagi dalam paket. Kuota layanan dan durasi pemrosesan tetap dapat menyebabkan kegagalan; keberhasilan produksi belum diverifikasi.
 
 ## Pembaruan v1.5.0
 
@@ -95,7 +73,7 @@ KD/Indikator dan Deskripsi/Ruang Lingkup digabung menjadi satu kolom **Kisi-kisi
 - Tipe soal berupa teks bebas; mendukung PG, PG kompleks/kategori, isian, matching, uraian, dan tipe lain melalui instruksi AI.
 - Enam parameter kisi-kisi wajib, kelas 1–12 opsional, 1 atau 2 stimulus.
 - Jumlah kata informatif; tidak menjadi skor tersendiri.
-- Tujuh kategori berbobot sama, skor 1–100 dihitung dari level empat kriteria; label ditentukan kode.
+- Tujuh kategori berbobot sama, skor 1–100 dan label diberikan langsung dalam hasil analisis.
 - Skor keseluruhan dihitung di backend sebagai rata-rata tepat tujuh skor.
 - Rubrik Barrett dan Bloom revisi terpisah, disertakan di setiap permintaan AI.
 - Analisis grammar untuk stimulus, stem, options dan instruksi.
@@ -191,7 +169,7 @@ Tes menggunakan respons buatan untuk memeriksa perilaku aplikasi; bukan bukti ak
 
 - Skor 1–100 adalah kesesuaian berdasarkan rubrik aplikasi, bukan skor resmi Barrett/Bloom, validitas empiris, daya beda, reliabilitas, atau indeks kesukaran.
 - Kategori lebih tinggi tidak otomatis lebih baik. Soal Literal/C1 boleh mendapat 100 bila tepat sasaran.
-- Label dihitung dari ambang skor dan aturan pembatas. Interpretasi kriteria dapat bervariasi antarpermintaan/model meskipun perhitungan deterministik.
+- Label diberikan langsung oleh layanan analisis, tanpa ambang skor yang dipaksakan kode. Rata-rata tujuh skor dihitung server; hasil dapat bervariasi.
 - Barrett digunakan untuk reading comprehension. Soal yang tidak mengukur bacaan akan diberi penjelasan keterbatasan oleh AI.
 - CEFR adalah estimasi tuntutan bahasa dan tugas, bukan sertifikasi.
 - Referensi diringkas ke rubrik backend, bukan dibaca ulang dari web pada setiap analisis.

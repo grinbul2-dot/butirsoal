@@ -1,4 +1,4 @@
-export const RUBRIC_VERSION = '2026-09-26.2';
+export const RUBRIC_VERSION = '2026-09-26.1';
 export const LABELS = ['Sangat Sesuai', 'Sesuai', 'Kurang Sesuai', 'Tidak Sesuai'];
 export const CATEGORIES = [
   ['type','Tipe Soal'], ['genre','Jenis Teks'], ['barrett','Kategori Barrett'],
@@ -7,24 +7,6 @@ export const CATEGORIES = [
 ];
 export const BARRETT = ['Literal Comprehension','Reorganization','Inferential Comprehension','Evaluation','Appreciation'];
 export const BLOOM = ['C1 — Remember','C2 — Understand','C3 — Apply','C4 — Analyze','C5 — Evaluate','C6 — Create'];
-export const CRITERIA = {
- type:['Format respons sesuai tipe yang diminta','Instruksi menjelaskan cara dan jumlah pilihan','Kunci dapat ditentukan secara defensible untuk setiap respons','Opsi/pernyataan jelas, tidak tumpang tindih atau memberi petunjuk tidak sengaja'],
- genre:['Fungsi komunikatif sesuai genre target','Organisasi isi mendukung fungsi genre','Ciri kebahasaan mendukung genre tanpa menuntut semua ciri prototipikal','Seluruh stimulus konsisten dengan genre yang diminta'],
- barrett:['Proses pemahaman yang diperlukan sesuai kategori target','Bukti teks cukup untuk melakukan proses target','Stem dan opsi mempertahankan proses target tanpa jalan pintas','Seluruh subpernyataan mengukur proses target secara konsisten'],
- kisi:['Keterampilan/kompetensi yang diukur sesuai kisi-kisi','Materi dan konteks sesuai batasan yang tertulis','Tindakan atau produk jawaban sesuai indikator','Semua ketentuan eksplisit terpenuhi tanpa konflik dengan parameter lain'],
- bloom:['Proses kognitif minimum untuk menjawab sesuai target','Tugas benar-benar memerlukan proses tersebut','Stimulus dan opsi mendukung proses tanpa jalan pintas','Seluruh subpernyataan konsisten dengan level target'],
- cefr:['Kosakata dan ungkapan sesuai target dan dukungan konteks','Kompleksitas sintaksis sesuai target','Kohesi dan organisasi wacana sesuai target','Tuntutan tugas membaca sesuai deskriptor target'],
- grammar:['Bentuk kata, tense, agreement dan struktur klausa tepat','Pronomina, rujukan dan hubungan antarklausa jelas','Stem, opsi dan instruksi gramatikal serta paralel sesuai kebutuhan','Ejaan dan tanda baca tidak mengganggu makna']
-};
-export const LEVELS = [
- '0 — Tidak terpenuhi atau tidak dapat dibuktikan: bukti hilang, bertentangan, atau kriteria tidak berlaku; jelaskan keterbatasannya.',
- '1 — Terpenuhi sedikit: ketidaksesuaian dominan, perlu perubahan besar.',
- '2 — Terpenuhi sebagian: ada ketidaksesuaian material yang memengaruhi konstruk, makna, atau jawaban.',
- '3 — Hampir terpenuhi: ada kekurangan kecil yang dapat ditunjuk, tidak mengubah konstruk atau jawaban.',
- '4 — Terpenuhi: semua unsur kriteria didukung bukti, tidak ada kekurangan nyata; preferensi gaya tidak mengurangi nilai.'
-];
-export function scoreLabel(score){return score>=90?LABELS[0]:score>=75?LABELS[1]:score>=50?LABELS[2]:LABELS[3];}
-
 export const REFERENCES = [
   {title:'Barrett: penelitian soal Bright an English 2 — Putri (2025)',url:'https://ejournal.unesa.ac.id/index.php/retain/article/view/62937'},
   {title:'Barrett: penelitian awal — Cooke (1970), ERIC',url:'https://eric.ed.gov/?id=ED064672'},
@@ -59,25 +41,13 @@ Grammar: periksa SELURUH stimulus, stem, options/instruksi. Bedakan kesalahan ny
 
 PENILAIAN:
 Tepat ${CATEGORIES.length} kategori: ${CATEGORIES.map(([id,name])=>id+'='+name).join('; ')}.
-Nilai setiap kategori melalui empat criteria dalam urutan berikut:
-${JSON.stringify(CRITERIA)}
-Tiap criteria: index 1..4, level integer 0..4, reason ringkas, quote kutipan persis dari input (tanpa tanda kutip pembungkus; string kosong jika bukti tidak tersedia).
-Aturan khusus: pada satu respons, kriteria konsistensi seluruh subpernyataan mengacu pada respons tunggal (bukan otomatis 0). Satu stimulus tidak perlu memiliki pasangan. Grammar menilai juga ejaan pada kriteria keempat; berikan alasan jelas bila hal itu menurunkan skor. Untuk Barrett/Bloom: bila proses minimum jelas berbeda dari target, kriteria 1 dan 2 maksimal level 1; jangan memberi kredit penuh hanya karena masih dalam ranah membaca. Jika kategori tidak berlaku, jelaskan dan gunakan level 0, jangan memaksa klasifikasi. CEFR adalah estimasi tuntutan tugas, bukan level kemampuan siswa.
-Patokan level: ${LEVELS.join('\n')}
-quote harus satu potongan berurutan dari sumber; jangan menggabungkan beberapa kutipan, menambahkan elipsis, label Teks 1, menerjemahkan, atau memparafrasakannya. Taruh uraian/parafrasa di reason, bukan quote. Jika tidak ada kutipan yang tepat, gunakan string kosong.
-Jangan memilih level berdasarkan kesan umum. Sebutkan kekurangan spesifik untuk level 1..3. Jika bukti tidak cukup atau kategori tidak berlaku, level 0 dan jelaskan; ini menunjukkan kesesuaian belum dapat dibuktikan, bukan mengukur kemampuan siswa.
-Skor kategori = max(1, round(jumlah level / 16 * 100)). Label dasar: 90–100 Sangat Sesuai; 75–<90 Sesuai; 50–<75 Kurang Sesuai; <50 Tidak Sesuai. Semua bobot kategori sama; keseluruhan = rata-rata 7 skor. Aplikasi menghitung skor/label; JANGAN keluarkan score atau label sendiri. Kategori Literal/C1 boleh penuh.
-Label keseluruhan tidak boleh Sangat Sesuai jika ada kategori <75, issues material, atau grammar.notes kesalahan nyata. Jika ada kategori <50 atau kunci berstatus Ambigu/Informasi tidak cukup, label keseluruhan maksimal Kurang Sesuai. Sertakan overall.reason tanpa angka/label dugaan; jelaskan simpulan dan keterbatasan.
-Jangan skor kelas/panjang teks sebagai kategori tambahan.
+Setiap skor integer 1–100 adalah KESESUAIAN terhadap target, bukan tinggi-rendah taksonomi. C1 atau Literal dapat 100. Semua bobot sama. Tentukan label secara koheren dari ${LABELS.join(' / ')}; gunakan pertimbangan profesional, tanpa skala resmi palsu. overall.label mempertimbangkan rata-rata aritmetika tujuh skor. overall.reason menjelaskan simpulan dan keterbatasan. Aplikasi menghitung rata-ratanya sendiri. Jangan skor kelas/panjang teks sebagai kategori tambahan.
 Masing-masing kategori: target, identified, analysis 2–4 kalimat, evidence ringkas berupa kutipan asli yang benar-benar ada atau jelaskan bukti tidak tersedia. issues memuat semua ketidaksesuaian yang material beserta category, location, explanation, suggestion; boleh kosong jika tidak ada.
 Narasi Bahasa Indonesia; istilah teknis Bahasa Inggris. Tidak perlu Markdown/HTML pada nilai string. analysis jangan hanya mengulang skor.
 
 REVISI:
-Selalu sertakan satu revision lengkap agar hasil tetap lengkap setelah skor dihitung server. Jika semua kriteria sudah terpenuhi, salin sumber utuh dengan rationale bahwa revisi tidak diperlukan; server akan menyembunyikannya bila label final Sangat Sesuai. Isi revision: stimuli (jumlah dan urutan SAMA dengan input) + question (termasuk semua opsi/instruksi) + rationale Bahasa Indonesia. Stimuli dan question revisi dalam Bahasa Inggris. Pertahankan identitas, fakta, gaya dan panjang stimulus sebisa mungkin; ubah hanya yang benar-benar diperlukan. Jangan menulis ulang drastis untuk sekadar meningkatkan level. Upayakan revisi pertanyaan/options sebelum stimulus. Jangan memotong teks yang tidak diubah atau memakai placeholder seperti 'sama dengan asli'. Dua teks tetap satu paket utuh. Jangan menambahkan item kedua atau tipe soal lain. Hindari mengarang fakta di luar stimulus. Kalau target saling bertentangan, jelaskan kompromi dalam rationale, jangan diam-diam mengganti target.
-PG KOMPLEKS KATEGORI:
-Satu stem diikuti baris-baris pernyataan dan kategori seperti True/False, Yes/No, Fact/Opinion. Satu kategori per baris; bukan satu opsi untuk seluruh soal, bukan selalu beberapa opsi benar. Jangan memaksakan proporsi True/False tertentu. Tinjau tiap baris dan jangan menyamakan 'tidak disebutkan' dengan False tanpa dasar instruksi/kontradiksi. Jika penetapan tidak dapat dibuktikan, tandai baris Informasi tidak cukup. Setiap baris harus memiliki statement asli, answer nama kategori, status, explanation, evidence kutipan persis dari stimulus atau string kosong jika tidak tersedia. Masukkan seluruh baris secara berurutan pada answerKey.rows (dan revision.answerKey.rows untuk revisi); tipe lain rows=[] kecuali memang berbentuk matriks kategori. Jangan menghitung jumlah pernyataan sebagai jumlah butir soal terpisah.
-PEMERIKSAAN SEBELUM MENGIRIM:
-Periksa semua opsi/pernyataan terhadap stimulus; periksa kunci asli dan revisi secara terpisah; pastikan kutipan persis ada, tidak ada fakta tambahan, klasifikasi berdasarkan tuntutan minimum, dan revisi menjawab temuan. Ini pemeriksaan dalam permintaan yang sama, bukan klaim verifikasi independen.
+Jika overall.label = Sangat Sesuai, JANGAN membuat properti revision.
+Jika bukan Sangat Sesuai, WAJIB membuat satu revision lengkap: stimuli (jumlah dan urutan SAMA dengan input) + question (termasuk semua opsi/instruksi) + rationale Bahasa Indonesia. Stimuli dan question revisi dalam Bahasa Inggris. Pertahankan identitas, fakta, gaya dan panjang stimulus sebisa mungkin; ubah hanya yang benar-benar diperlukan. Jangan menulis ulang drastis untuk sekadar meningkatkan level. Upayakan revisi pertanyaan/options sebelum stimulus. Jangan memotong teks yang tidak diubah atau memakai placeholder seperti 'sama dengan asli'. Dua teks tetap satu paket utuh. Jangan menambahkan item kedua atau tipe soal lain. Hindari mengarang fakta di luar stimulus. Kalau target saling bertentangan, jelaskan kompromi dalam rationale, jangan diam-diam mengganti target.
 Referensi landasan: ${REFERENCES.map(r=>r.title+' '+r.url).join('\n')}
 KUNCI JAWABAN:
 Selalu buat answerKey untuk soal ASLI berdasarkan stimulus dan seluruh opsi/instruksi. answer memuat label opsi DAN isi jawabannya; PG kompleks semua jawaban benar; kategori/menjodohkan pemetaan lengkap; isian jawaban yang diterima; uraian contoh jawaban dan unsur penting. explanation memuat alasan/bukti dalam Bahasa Indonesia. status Ditentukan untuk jawaban defensible; Ambigu jika beberapa jawaban bersaing pada soal yang meminta satu; Informasi tidak cukup jika tidak dapat ditentukan; Contoh jawaban untuk uraian terbuka. Jangan memaksakan satu jawaban, menebak, atau menganggap kunci yang tertulis di input pasti benar. Jika revision dibuat, sertakan revision.answerKey tersendiri, sesuai opsi dan isi soal revisi. Jangan menggunakan kunci soal asli untuk soal revisi tanpa memeriksa ulang.

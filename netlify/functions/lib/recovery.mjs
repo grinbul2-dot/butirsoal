@@ -65,7 +65,7 @@ export async function generateWithRecovery({body,validate,onProgress=()=>{},sign
  const messages={
  MODEL_NOT_AVAILABLE:'Layanan yang dipilih tidak tersedia. Pengelola perlu memeriksa pengaturan layanan utama dan cadangan.',
  TIME_LIMIT:'Pemeriksaan melewati batas waktu server. Coba satu stimulus lebih singkat untuk memeriksa koneksi.',
- INVALID_OUTPUT:'Hasil diterima, tetapi belum memenuhi kelengkapan rubrik. Isian Anda tetap tersedia; silakan coba kembali.',
+ INVALID_OUTPUT:'Hasil diterima, tetapi belum lengkap atau formatnya tidak sesuai. Isian Anda tetap tersedia; silakan coba kembali.',
  NETWORK_OR_RESPONSE:'Server tidak berhasil menerima respons lengkap dari layanan analisis.',
  UPSTREAM_429:'Batas permintaan atau kuota layanan tercapai. Tunggu beberapa saat; pengelola perlu memeriksa kuota jika terus berulang.'
  };
