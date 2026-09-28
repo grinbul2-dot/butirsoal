@@ -26,7 +26,7 @@ export function validateInput(data){
 }
 function assert(ok,code='STRUCTURE'){if(!ok)throw new Error('INVALID_OUTPUT_'+code);}
 function checkKey(k){assert(k&&['Ditentukan','Ambigu','Informasi tidak cukup','Contoh jawaban'].includes(k.status)&&nonempty(k.answer)&&nonempty(k.explanation));}
-export function validateOutput(x,input){
+export function validateOutput(x,input,requireRevision=true){
  checkKey(x?.answerKey);
  assert(x && Array.isArray(x.categories) && x.categories.length===CATEGORIES.length);
  const ids=CATEGORIES.map(c=>c[0]);
@@ -38,8 +38,17 @@ export function validateOutput(x,input){
  assert(Array.isArray(x.issues));
  for(const n of x.issues){assert(ids.includes(n.category));for(const k of ['location','explanation','suggestion'])assert(nonempty(n[k]));}
  if(x.overall.label==='Sangat Sesuai')delete x.revision;
- else{const r=x.revision;assert(r&&Array.isArray(r.stimuli)&&r.stimuli.length===input.stimuli.length&&r.stimuli.every(s=>nonempty(s))&&nonempty(r.question)&&nonempty(r.rationale));checkKey(r.answerKey);}
+ else if(requireRevision)validateRevision(x.revision,input);
  x.categories.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
  x.overall.score=x.categories.reduce((s,c)=>s+c.score,0)/CATEGORIES.length;
  return x;
 }
+
+export const analysisSchema=structuredClone(schema);
+delete analysisSchema.properties.revision;
+export const revisionSchema=schema.properties.revision;
+export function validateRevision(r,input){
+ assert(r&&Array.isArray(r.stimuli)&&r.stimuli.length===input.stimuli.length&&r.stimuli.every(s=>nonempty(s))&&nonempty(r.question)&&nonempty(r.rationale));
+ checkKey(r.answerKey);return r;
+}
+export function validateAnalysis(x,input){const result=validateOutput(x,input,false);delete result.revision;return result;}

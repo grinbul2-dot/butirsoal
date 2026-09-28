@@ -1,16 +1,22 @@
 // Local server for preview/testing. Never exposes an API key to the browser.
+import revisionHandler from './netlify/functions/revise.mjs';
 import http from 'node:http';
 import {readFile} from 'node:fs/promises';
 import imageHandler from './netlify/functions/read-image.mjs';
 import handler from './netlify/functions/analyze.mjs';
+import {createJobsHandler} from './netlify/functions/jobs.mjs';
+import {runJob} from './netlify/functions/lib/jobs.mjs';
+import {memoryStore} from './dev-store.mjs';
+const store=memoryStore();
+const jobsHandler=createJobsHandler({store,dispatch:async data=>{setImmediate(()=>runJob(data,{store}).catch(()=>console.warn('Local job storage failed')));}});
 const port=Number(process.env.PORT||8787);
 http.createServer(async(req,res)=>{
  try{
-  if(['/.netlify/functions/analyze','/.netlify/functions/read-image'].includes(req.url)){
+  if(['/.netlify/functions/analyze','/.netlify/functions/read-image','/.netlify/functions/revise','/.netlify/functions/jobs'].includes(req.url)){
    let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>4500000){res.writeHead(413,{'Content-Type':'application/json'});res.end(JSON.stringify({error:'Data terlalu besar.'}));return;}chunks.push(chunk);}
    const controller=new AbortController();res.on('close',()=>controller.abort());
    const request=new Request('http://localhost:'+port+req.url,{method:req.method,headers:req.headers,...(req.method==='POST'?{body:Buffer.concat(chunks)}:{}),signal:controller.signal});
-   const response=await (req.url.endsWith('read-image')?imageHandler:handler)(request);
+   const response=await (req.url.endsWith('jobs')?jobsHandler:req.url.endsWith('read-image')?imageHandler:req.url.endsWith('revise')?revisionHandler:handler)(request);
    res.writeHead(response.status,Object.fromEntries(response.headers));
    for await(const chunk of response.body)res.write(chunk);res.end();return;
   }

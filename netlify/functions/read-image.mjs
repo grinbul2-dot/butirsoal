@@ -25,13 +25,13 @@ export function validateExtraction(x){
  if(x.stimuli.length<1||x.stimuli.length>2||!x.stimuli.every(s=>typeof s==='string'&&s.trim()&&s.length<=20000)||!x.question.trim()||x.question.length>12000)throw new Error('invalid');
  return {accepted:true,reason:'',stimuli:x.stimuli.map(s=>s.trim()),question:x.question.trim()};
 }
-export async function handleRequest(event,onProgress,signal){
+export async function handleRequest(event,onProgress,signal,recoveryOptions={}){
  if(event.httpMethod!=='POST')return reply(405,{error:'Gunakan metode POST.'});
  if(!/application\/json/i.test(event.headers?.['content-type']||event.headers?.['Content-Type']||''))return reply(415,{error:'Format permintaan harus JSON.'});
  if(!event.body||Buffer.byteLength(event.body)>4500000)return unsupported('ukuran kiriman terlalu besar atau kosong.');
  let images;try{images=validateImages(JSON.parse(event.body));}catch(e){return unsupported(e instanceof SyntaxError?'data kiriman tidak dapat dibaca.':e.message);}
  try{
-  const result=await generateWithRecovery({onProgress,signal,validate:validateExtraction,body:{systemInstruction:{parts:[{text:IMAGE_PROMPT}]},contents:[{role:'user',parts:[{text:'Periksa keterbacaan dan kelayakan, lalu transkripsikan satu soal dari gambar berurutan berikut.'},...images.map(inlineData=>({inlineData}))]}],generationConfig:{responseMimeType:'application/json',responseJsonSchema:schema,maxOutputTokens:16000}}});
+  const result=await generateWithRecovery({...recoveryOptions,onProgress,signal,validate:validateExtraction,body:{systemInstruction:{parts:[{text:IMAGE_PROMPT}]},contents:[{role:'user',parts:[{text:'Periksa keterbacaan dan kelayakan, lalu transkripsikan satu soal dari gambar berurutan berikut.'},...images.map(inlineData=>({inlineData}))]}],generationConfig:{responseMimeType:'application/json',responseJsonSchema:schema,maxOutputTokens:16000}}});
   if(!result.accepted)return unsupported(result.reason);
   return reply(200,{result});
  }catch(e){return reply(e.status||502,{error:e.status?e.message:'Koneksi layanan terputus. Silakan coba kembali; isian Anda tetap tersedia.'});}

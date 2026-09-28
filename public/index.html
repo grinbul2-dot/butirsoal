@@ -41,7 +41,11 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 .compare-column{background:#f6f8ff}.result-section{border-color:#e0e5f0}
 .footer{border-top:1px solid #e0e5f0;margin-top:30px;font-size:.8rem}
 @media(max-width:760px){.page-navigation{padding:14px 15px 0}.step{font-size:.78rem}.image-import{padding:15px}.image-actions button{flex:1}.field-top{gap:8px}.intro .outline-label{font-size:.8rem}.brand{font-size:.7rem}.form-body{padding:21px 18px}}
-.rubric-table{overflow-x:auto;margin-top:16px}.rubric-table table{width:100%;border-collapse:collapse;text-align:left;font-size:.9rem}.rubric-table th,.rubric-table td{padding:12px;border:1px solid var(--line);vertical-align:top}.rubric-table th{background:#edf3ff;color:#342650}.score-card .note-item{font-size:.85rem;padding-left:10px}.overall li{margin-top:8px;font-size:.9rem}</style>
+.rubric-table{overflow-x:auto;margin-top:16px}.rubric-table table{width:100%;border-collapse:collapse;text-align:left;font-size:.9rem}.rubric-table th,.rubric-table td{padding:12px;border:1px solid var(--line);vertical-align:top}.rubric-table th{background:#edf3ff;color:#342650}.score-card .note-item{font-size:.85rem;padding-left:10px}.overall li{margin-top:8px;font-size:.9rem}
+.workspace{grid-template-columns:minmax(0,1fr);max-width:960px;margin:auto}.page{max-width:1120px}.aside{margin:0}.aside>h2{margin-top:22px}.input-modes{display:flex;gap:8px;margin-bottom:20px}.input-modes [aria-pressed=true],.comparison-tabs [aria-pressed=true]{background:#eee7fa;border-color:#8260b7;color:#41286a}.score-grid{grid-template-columns:1fr;margin-top:20px}.score-card{display:grid;grid-template-columns:1fr auto;gap:8px 20px}.score-card h3{min-height:0;margin:0}.score-value{font-size:1.4rem;margin:0}.score-card>p,.score-card>details,.score-track{grid-column:1/-1}.score-card>.badge{justify-self:start}.score-card p{margin:0}.score-track{height:5px;background:#e7eefb;border-radius:5px;overflow:hidden}.score-track span{display:block;height:100%;background:#8260b7}.score-card details{margin:0}.comparison-tabs{display:none}#resultTools{margin-top:22px}#retryRequest{margin-bottom:20px}.image-actions{align-items:center}.fields{margin-top:20px}
+@media(max-width:760px){.comparison-tabs{display:flex;gap:8px;margin-top:20px}.compare-column:not(.revised){display:none}.show-original .compare-column:not(.revised){display:block}.show-original .compare-column.revised{display:none}.result-actions button{flex-basis:180px}#resultTools button{flex:1 1 180px}}
+@media print{#resultTools,#retryRequest,.comparison-tabs{display:none!important}.compare-column{display:block!important}}
+</style>
 </head>
 <body>
 <header class="masthead"><div class="mast-inner"><div class="brand">SWISS ARMY TOOLS FOR ENGLISH TEACHERS</div><small>Ruang kerja guru Bahasa Inggris</small></div></header>
@@ -54,19 +58,19 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 <form id="analysisForm" class="form-body">
 <div id="step1">
 <div class="section-lead"><h2>Tentukan target soal</h2><p>Semua field kisi-kisi wajib diisi. Kelas bersifat opsional.</p></div>
-<div class="fields">
+<div class="image-actions"><button type="button" id="saveTemplate">Simpan Template Parameter</button><button type="button" id="loadTemplate">Gunakan Template</button></div><p id="templateStatus" class="help" role="status"></p><div class="fields"><div class="field full"><label for="kisi">Kisi-kisi</label><textarea id="kisi" name="kisi" rows="5" required maxlength="12000" placeholder="Ketik atau copy paste kisi-kisi untuk soal ini di sini…&#10;&#10;Contoh: Disajikan teks narrative berupa cerita rakyat pendek, siswa dapat menyimpulkan sifat tokoh utama berdasarkan tindakannya." aria-describedby="kisiHelp"></textarea><div id="kisiHelp" class="help">Tempel kisi-kisi yang menjadi acuan soal ini. Boleh mencakup kompetensi, indikator, materi, dan ruang lingkup.</div></div>
 <div class="field"><label for="type">Tipe soal</label><input id="type" name="type" required maxlength="4000" placeholder="Contoh: Pilihan Ganda Kompleks" list="types"><datalist id="types"><option>Pilihan Ganda</option><option>Pilihan Ganda Kompleks</option><option>Pilihan Ganda Kompleks Kategori</option><option>Isian</option><option>Menjodohkan</option><option>Uraian</option></datalist><div class="help">Boleh ketik tipe lain sesuai kebutuhan.</div></div>
 <div class="field"><label for="genre">Jenis teks</label><input id="genre" name="genre" required maxlength="4000" placeholder="Contoh: Narrative" list="genres"><datalist id="genres"><option>Narrative</option><option>Descriptive</option><option>Recount</option><option>Report</option><option>Procedure</option><option>Announcement</option><option>Invitation</option></datalist><div class="help">Untuk dua teks, sebutkan jenis masing-masing.</div></div>
 <div class="field"><label for="barrett">Kategori Barrett</label><select id="barrett" name="barrett" required><option value="">Pilih kategori pemahaman</option><option>Literal Comprehension</option><option>Reorganization</option><option>Inferential Comprehension</option><option>Evaluation</option><option>Appreciation</option></select><div id="barrettHelp" class="help">Jenis pemahaman bacaan yang ditargetkan.</div></div>
 <div class="field"><label for="grade">Kelas <span class="req">(opsional)</span></label><select id="grade" name="grade"><option value="">Pilih kelas</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select><div class="help">Konteks siswa, tidak diberi skor tersendiri.</div></div>
-<div class="field full"><label for="kisi">Kisi-kisi</label><textarea id="kisi" name="kisi" rows="5" required maxlength="12000" placeholder="Ketik atau copy paste kisi-kisi untuk soal ini di sini…&#10;&#10;Contoh: Disajikan teks narrative berupa cerita rakyat pendek, siswa dapat menyimpulkan sifat tokoh utama berdasarkan tindakannya." aria-describedby="kisiHelp"></textarea><div id="kisiHelp" class="help">Tempel kisi-kisi yang menjadi acuan soal ini. Boleh mencakup kompetensi, indikator, materi, dan ruang lingkup.</div></div>
+
 <div class="field"><label for="bloom">Level kognitif Bloom</label><select id="bloom" name="bloom" required><option value="">Pilih proses kognitif</option><option>C1 — Remember</option><option>C2 — Understand</option><option>C3 — Apply</option><option>C4 — Analyze</option><option>C5 — Evaluate</option><option>C6 — Create</option></select></div>
 <div class="field"><label for="cefr">Target CEFR</label><select id="cefr" name="cefr" required><option value="">Pilih tingkat bahasa</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select></div>
 </div><div class="actions"><span class="draft" id="draftStatus">Draf tersimpan di perangkat ini.</span><button id="nextBtn" type="button" class="primary">Lanjut ke Butir Soal</button></div>
 </div>
 <div id="step2" hidden>
 <div class="section-lead"><h2>Masukkan butir soal</h2><p>Sertakan stimulus lengkap, pertanyaan, serta seluruh opsi atau instruksi.</p></div>
-<section class="image-import" aria-label="Masukkan soal dari gambar"><h3>Masukkan soal dari gambar</h3><p class="small">Unggah atau foto satu soal lengkap beserta bacaan dan opsi. Maksimal 3 gambar berurutan, JPG/PNG/WebP, 10 MB per gambar.</p><div class="image-actions"><button type="button" id="uploadImage">Unggah Gambar</button><button type="button" id="takePhoto">Ambil Foto / Kamera</button><button type="button" id="clearImages" hidden>Hapus Gambar</button></div><input id="imageFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><input id="cameraFile" type="file" accept="image/*" capture="environment" hidden><div id="imagePreviews" class="image-previews"></div><p class="help">Pada perangkat yang mendukung, tombol kamera membuka kamera belakang. Gambar dikirim ke layanan pembacaan setelah Anda menekan tombol di bawah.</p><button id="readImages" type="button" hidden>Baca Gambar</button><p id="imageMessage" class="help" role="status" aria-live="polite"></p><div id="ocrFallback" class="ocr-fallback" hidden><strong>Belum berhasil membaca gambar?</strong><p>Buka <a href="https://www.imagetotext.info/" target="_blank" rel="noopener noreferrer">Image to Text ↗</a>, unggah gambar di sana, lalu salin hasilnya ke kolom stimulus dan pertanyaan di bawah. Periksa kembali teks dan opsi sebelum dianalisis.</p></div><div id="extractionReview" hidden><h3>Periksa hasil pembacaan</h3><p class="small">Pastikan teks dan opsi sesuai foto. Tombol berikut akan mengganti isian stimulus dan pertanyaan; sesudahnya Anda dapat mengedit hasilnya.</p><div id="extractionText" class="extraction-preview"></div><button id="applyExtraction" type="button">Gunakan Hasil Pembacaan</button></div></section>
+<div class="input-modes" role="group" aria-label="Cara memasukkan soal"><button type="button" id="textMode" aria-pressed="true">Tempel Teks</button><button type="button" id="imageMode" aria-pressed="false">Unggah Gambar</button></div><section id="imageImport" hidden class="image-import" aria-label="Masukkan soal dari gambar"><h3>Masukkan soal dari gambar</h3><p class="small">Unggah atau foto satu soal lengkap beserta bacaan dan opsi. Maksimal 3 gambar berurutan, JPG/PNG/WebP, 10 MB per gambar.</p><div class="image-actions"><button type="button" id="uploadImage">Unggah Gambar</button><button type="button" id="takePhoto">Ambil Foto / Kamera</button><button type="button" id="clearImages" hidden>Hapus Gambar</button></div><input id="imageFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><input id="cameraFile" type="file" accept="image/*" capture="environment" hidden><div id="imagePreviews" class="image-previews"></div><p class="help">Pada perangkat yang mendukung, tombol kamera membuka kamera belakang. Gambar dikirim ke layanan pembacaan setelah Anda menekan tombol di bawah.</p><button id="readImages" type="button" hidden>Baca Gambar</button><p id="imageMessage" class="help" role="status" aria-live="polite"></p><div id="ocrFallback" class="ocr-fallback" hidden><strong>Belum berhasil membaca gambar?</strong><p>Buka <a href="https://www.imagetotext.info/" target="_blank" rel="noopener noreferrer">Image to Text ↗</a>, unggah gambar di sana, lalu salin hasilnya ke kolom stimulus dan pertanyaan di bawah. Periksa kembali teks dan opsi sebelum dianalisis.</p></div><div id="extractionReview" hidden><h3>Periksa hasil pembacaan</h3><p class="small">Pastikan teks dan opsi sesuai foto. Tombol berikut akan mengganti isian stimulus dan pertanyaan; sesudahnya Anda dapat mengedit hasilnya.</p><div id="extractionText" class="extraction-preview"></div><button id="applyExtraction" type="button">Gunakan Hasil Pembacaan</button></div></section>
 <div class="text-block"><div class="field-top"><label for="text1">Stimulus — Teks 1</label><button type="button" id="cleartext1" class="clear-button" aria-label="Hapus Stimulus — Teks 1">Clear</button></div><textarea id="text1" name="text1" class="text-input" required maxlength="20000" placeholder="Tempel bacaan Bahasa Inggris di sini…" lang="en"></textarea><div id="count1" class="count">0 kata</div></div>
 <div id="secondText" class="text-block" hidden><div class="field-top"><label for="text2">Stimulus — Teks 2</label><button type="button" id="cleartext2" class="clear-button" aria-label="Hapus stimulus teks 2">Clear</button><button type="button" id="removeText" class="text-button">Sembunyikan teks kedua</button></div><textarea id="text2" name="text2" class="text-input" maxlength="20000" placeholder="Tempel bacaan kedua…" lang="en"></textarea><div id="count2" class="count">0 kata</div></div>
 <button type="button" id="addText">+ Tambah Teks Kedua</button>
@@ -77,18 +81,18 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 </div>
 </form>
 </section>
-<aside class="panel aside"><h2>Tujuh sudut penilaian</h2><p>Bobot sama. Skor mengukur kesesuaian dengan target yang Anda tentukan.</p><ol class="rubric-list"><li>Tipe soal <span>01</span></li><li>Jenis teks <span>02</span></li><li>Kategori Barrett <span>03</span></li><li>Kisi-kisi <span>04</span></li><li>Bloom revisi <span>05</span></li><li>Target CEFR <span>06</span></li><li>Grammar <span>07</span></li></ol><p>Grammar diperiksa pada stimulus dan pertanyaan, termasuk opsi jawaban.</p>
+<details class="panel aside"><summary>Panduan penilaian</summary><h2>Tujuh sudut penilaian</h2><p>Bobot sama. Skor mengukur kesesuaian dengan target yang Anda tentukan.</p><ol class="rubric-list"><li>Tipe soal <span>01</span></li><li>Jenis teks <span>02</span></li><li>Kategori Barrett <span>03</span></li><li>Kisi-kisi <span>04</span></li><li>Bloom revisi <span>05</span></li><li>Target CEFR <span>06</span></li><li>Grammar <span>07</span></li></ol><p>Grammar diperiksa pada stimulus dan pertanyaan, termasuk opsi jawaban.</p>
 <details><summary>Cara membaca skor</summary><p>Nilai 1–100 menunjukkan kesesuaian. Skor keseluruhan adalah rata-rata tujuh kategori. Label mencerminkan penilaian kesesuaian soal dengan target.</p><p>Soal Literal atau C1 dapat memperoleh skor 100 jika sesuai dengan targetnya. Skor ini bukan indeks kesukaran hasil uji siswa.</p><p><span class="badge status-0">Sangat Sesuai</span></p><p><span class="badge status-1">Sesuai</span></p><p><span class="badge status-2">Kurang Sesuai</span></p><p><span class="badge status-3">Tidak Sesuai</span></p></details>
 <details><summary>Barrett dan Bloom</summary><p>Barrett menelaah jenis pemahaman bacaan. Bloom revisi menelaah proses kognitif. Keduanya diperiksa terpisah, berdasarkan tuntutan soal dan bukti pada teks.</p><p>Inferensi dalam Barrett tidak otomatis C4 dalam Bloom. Kata kerja pertanyaan saja belum cukup untuk menentukan level.</p></details>
 <details><summary>Referensi analisis</summary><ul class="references"><li><a href="https://ejournal.unesa.ac.id/index.php/retain/article/view/62937" target="_blank" rel="noopener noreferrer">Barrett — Putri (2025), UNESA</a></li><li><a href="https://eric.ed.gov/?id=ED064672" target="_blank" rel="noopener noreferrer">Barrett — Cooke (1970), ERIC</a></li><li><a href="https://teaching.uic.edu/cate-teaching-guides/syllabus-course-design/blooms-taxonomy-of-educational-objectives/" target="_blank" rel="noopener noreferrer">Bloom revisi — UIC</a></li><li><a href="https://www.coe.int/en/web/common-european-framework-reference-languages" target="_blank" rel="noopener noreferrer">CEFR — Council of Europe</a></li></ul><p>Referensi menjadi dasar klasifikasi. Skala kesesuaian 1–100 disusun untuk aplikasi, bukan skala resmi taksonomi. </p></details>
-</aside>
+</details>
 </div>
 <section id="step3" hidden aria-label="Analisis dan telaah">
 <div class="actions result-actions"><button type="button" id="editQuestion">Kembali ke Butir Soal</button><button type="button" class="primary" id="startNew">START NEW ANALYSIS</button></div>
-<section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Mohon tunggu. Jika layanan sibuk, server mencoba ulang otomatis. Hasil dikirim setelah pemeriksaan selesai.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section>
-<section id="results" class="results" aria-label="Hasil analisis" hidden></section>
+<section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Pemeriksaan berjalan di latar belakang. Status diperbarui otomatis; jangan mengirim ulang soal selama proses berlangsung.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section>
+<div id="resultTools" class="image-actions" hidden><button type="button" id="copyResult">Salin Hasil</button><button type="button" id="reviseBtn" class="primary">Buat Revisi Sesuai Parameter</button><button type="button" id="reanalyze">Analisis Ulang</button></div><p id="resultStatus" class="help" role="status"></p><button type="button" id="retryRequest" hidden>Coba Lagi</button><section id="results" class="results" aria-label="Hasil analisis" hidden></section>
 </section>
-<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v1.7.1</span></footer>
+<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v1.9.0</span></footer>
 </main>
 <script>
 'use strict';
@@ -102,7 +106,7 @@ const descriptions={
 'Evaluation':'Menilai isi atau tindakan berdasarkan bukti dan kriteria.',
 'Appreciation':'Menelaah dampak emosional dan estetis, termasuk bahasa serta gaya penulis.'};
 const fields=['type','genre','barrett','grade','kisi','bloom','cefr','text1','text2','question'];
-let step=1,hasSecond=false,busy=false,saveTimer,lastInput=null;
+let step=1,hasSecond=false,busy=false,saveTimer,lastInput=null,lastData=null,cachedResult=null;
 function escapeHTML(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function badge(label){return '<span class="badge status-'+labels.indexOf(label)+'">'+escapeHTML(label)+'</span>';}
 function wordCount(s){return (s.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu)||[]).length;}
@@ -121,13 +125,13 @@ $('tab1').onclick=()=>{if(!busy)showStep(1);};$('tab2').onclick=()=>{if(!busy)go
 $('tab3').onclick=()=>{if(!busy&&lastInput)showStep(3);};$('editQuestion').onclick=()=>{if(!busy)showStep(2);};
 $('addText').onclick=()=>{second(true);saveDraft();$('text2').focus();};$('removeText').onclick=()=>{second(false);saveDraft();};
 function saveDraft(){try{localStorage.setItem('analisis-butir-draft-v1',JSON.stringify({fields:Object.fromEntries(fields.map(id=>[id,$(id).value])),hasSecond}));$('draftStatus').textContent='Draf tersimpan di perangkat ini.';}catch{$('draftStatus').textContent='Penyimpanan lokal tidak tersedia. Pertahankan halaman ini tetap terbuka.';}}
-function invalidate(){$('results').hidden=true;$('results').innerHTML='';lastInput=null;$('tab3').disabled=true;}
+function invalidate(){$('resultTools').hidden=true;$('resultStatus').textContent='';$('retryRequest').hidden=true;lastData=null;$('results').hidden=true;$('results').innerHTML='';lastInput=null;$('tab3').disabled=true;}
 $('analysisForm').addEventListener('input',()=>{counts();$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';invalidate();$('errorBox').hidden=true;clearTimeout(saveTimer);saveTimer=setTimeout(saveDraft,250);});
 $('analysisForm').addEventListener('change',()=>{invalidate();saveDraft();$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';});
 $('addText').addEventListener('click',invalidate);$('removeText').addEventListener('click',invalidate);
 try{const d=JSON.parse(localStorage.getItem('analisis-butir-draft-v1')||'null');if(d?.fields){if(typeof d.fields.kisi!=='string')d.fields.kisi=[d.fields.indicator,d.fields.scope].filter(v=>typeof v==='string'&&v.trim()).join('\n\n');for(const id of fields)if(typeof d.fields[id]==='string')$(id).value=d.fields[id];second(d.hasSecond===true);$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';}}catch{$('draftStatus').textContent='Draf lokal tidak tersedia.';}counts();
 function payload(){return {blueprint:Object.fromEntries(['type','genre','barrett','kisi','bloom','cefr'].map(id=>[id,$(id).value.trim()])),grade:$('grade').value?Number($('grade').value):null,stimuli:[$('text1').value.trim(),...(hasSecond?[$('text2').value.trim()]:[])],question:$('question').value.trim()};}
-function setBusy(on){busy=on;for(const el of document.querySelectorAll('form input,form textarea,form select,form button,.steps button'))el.disabled=on;$('analysisForm').setAttribute('aria-busy',String(on));$('analyzeBtn').textContent=on?'Menganalisis…':'Analisis Soal';$('startNew').disabled=on;$('editQuestion').disabled=on;$('tab3').disabled=on||!lastInput;}
+function setBusy(on){busy=on;for(const el of document.querySelectorAll('form input,form textarea,form select,form button,.steps button'))el.disabled=on;$('analysisForm').setAttribute('aria-busy',String(on));$('analyzeBtn').textContent=on?'Menganalisis…':'Analisis Soal';$('startNew').disabled=on;$('editQuestion').disabled=on;$('tab3').disabled=on||!lastInput;for(const id of ['reviseBtn','reanalyze','retryRequest'])$(id).disabled=on;}
 // Word-level LCS. Large replacements use a bounded prefix/suffix comparison to keep mobile responsive.
 function diffPair(original,revised){
  if(original===revised)return {before:escapeHTML(original),after:escapeHTML(revised),coarse:false};
@@ -148,7 +152,7 @@ function renderResult(data,input){
  const r=data.result;
  if(!r||!Array.isArray(r.categories)||r.categories.length!==Object.keys(names).length||!r.answerKey||!r.overall||!r.grammar||!Array.isArray(r.issues))throw new Error('Hasil analisis tidak lengkap. Silakan coba lagi.');
  const e=escapeHTML;
- const cards=r.categories.map(c=>'<article class="score-card"><h3>'+e(names[c.id])+'</h3><div class="score-value">'+e(c.score)+'<small>/100</small></div>'+badge(c.label)+'<details><summary>Alasan skor</summary><span class="detail-label">Target</span><p>'+e(c.target)+'</p><span class="detail-label">Teridentifikasi</span><p>'+e(c.identified)+'</p><p>'+e(c.analysis)+'</p><span class="detail-label">Bukti / Dasar</span><p>'+e(c.evidence)+'</p></details></article>').join('');
+ const cards=r.categories.map(c=>'<article class="score-card"><h3>'+e(names[c.id])+'</h3><div class="score-value">'+e(c.score)+'<small>/100</small></div>'+badge(c.label)+'<div class="score-track" aria-hidden="true"><span style="width:'+Math.max(0,Math.min(100,Number(c.score)||0))+'%"></span></div><p>'+e(c.identified)+'</p><details><summary>Alasan skor</summary><span class="detail-label">Target</span><p>'+e(c.target)+'</p><span class="detail-label">Teridentifikasi</span><p>'+e(c.identified)+'</p><p>'+e(c.analysis)+'</p><span class="detail-label">Bukti / Dasar</span><p>'+e(c.evidence)+'</p></details></article>').join('');
  const keyBlock=(key,title)=>'<section class="panel result-section"><h2>'+e(title)+'</h2><p class="answer-status">'+e(key.status)+'</p><p class="answer-text">'+e(key.answer)+'</p><p>'+e(key.explanation)+'</p></section>';
  const answerKeys=keyBlock(r.answerKey,'Kunci jawaban — Soal asli')+(r.revision&&r.overall.label!=='Sangat Sesuai'?keyBlock(r.revision.answerKey,'Kunci jawaban — Soal revisi'):'');
  const grammarNotes=r.grammar.notes.map(n=>'<div class="note-item"><h3>'+e(n.location)+'</h3><div class="small">Bagian yang ditinjau</div><p class="quote" lang="en">'+e(n.original)+'</p><div class="small">Perbaikan</div><p class="quote correction" lang="en">'+e(n.correction)+'</p><p>'+e(n.explanation)+'</p></div>').join('');
@@ -158,16 +162,16 @@ function renderResult(data,input){
  else if(r.revision){
   const diffs=input.stimuli.map((s,i)=>diffPair(s,r.revision.stimuli[i]));diffs.push(diffPair(input.question,r.revision.question));
   const column=side=>diffs.map((d,i)=>'<h4>'+ (i<input.stimuli.length?'Stimulus — Teks '+(i+1):'Pertanyaan & opsi / instruksi')+'</h4><div class="comparison-text" lang="en">'+d[side]+'</div>').join('');
-  revision='<section class="panel result-section"><h2>Satu versi revisi yang utuh</h2><p>'+e(r.revision.rationale)+'</p><p class="small"><del>Teks dihapus atau diganti</del> pada versi asli; <mark>teks ditambahkan atau diganti</mark> pada versi revisi.</p>'+(diffs.some(d=>d.coarse)?'<p class="small">Pada bagian yang sangat panjang, sorotan dikelompokkan per rentang perubahan.</p>':'')+'<div class="compare-grid"><div class="compare-column"><h3>Versi asli</h3>'+column('before')+'</div><div class="compare-column revised"><h3>Versi revisi</h3>'+column('after')+'</div></div></section>';
- }else throw new Error('Revisi belum lengkap. Silakan ulangi analisis.');
+  revision='<section class="panel result-section"><h2>Satu versi revisi yang utuh</h2><p>'+e(r.revision.rationale)+'</p><p class="small"><del>Teks dihapus atau diganti</del> pada versi asli; <mark>teks ditambahkan atau diganti</mark> pada versi revisi.</p>'+(diffs.some(d=>d.coarse)?'<p class="small">Pada bagian yang sangat panjang, sorotan dikelompokkan per rentang perubahan.</p>':'')+'<div class="comparison-tabs"><button type="button" data-side="original" aria-pressed="false">Asli</button><button type="button" data-side="revised" aria-pressed="true">Revisi</button></div><div class="compare-grid"><div class="compare-column"><h3>Versi asli</h3>'+column('before')+'</div><div class="compare-column revised"><h3>Versi revisi</h3>'+column('after')+'</div></div></section>';
+ }else revision='<section class="panel result-section"><h2>Revisi sesuai parameter</h2><p>Klik Buat Revisi Sesuai Parameter untuk menyempurnakan soal berdasarkan temuan, termasuk target CEFR.</p></section>';
  const score=Number(r.overall.score).toLocaleString('id-ID',{maximumFractionDigits:3});
- $('results').innerHTML='<div class="result-top"><h2>Hasil telaah soal</h2><span class="small">'+input.stimuli.length+' teks · '+input.stimuli.reduce((s,t)=>s+wordCount(t),0)+' kata</span></div><section class="overall"><div><div class="eyebrow">Skor keseluruhan</div><div class="overall-number">'+score+'<small>/100</small></div><div class="eyebrow">Rata-rata 7 kategori</div></div><div>'+badge(r.overall.label)+'<p class="reason">'+e(r.overall.reason)+'</p>'+'</div></section><div class="score-grid">'+cards+'</div>'+answerKeys+'<section class="panel result-section"><h2>Analisis Grammar</h2><p>'+e(r.grammar.summary)+'</p>'+grammarNotes+'</section><section class="panel result-section"><h2>Poin ketidaksesuaian</h2>'+issues+'</section>'+revision;
- lastInput=input;showStep(3);$('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'start'});
+ $('results').innerHTML='<div class="result-top"><h2>Hasil telaah soal</h2><span class="small">'+input.stimuli.length+' teks · '+input.stimuli.reduce((s,t)=>s+wordCount(t),0)+' kata</span></div><section class="overall"><div><div class="eyebrow">Skor keseluruhan</div><div class="overall-number">'+score+'<small>/100</small></div><div class="eyebrow">Rata-rata 7 kategori</div></div><div>'+badge(r.overall.label)+'<p class="reason">'+e(r.overall.reason)+'</p>'+'</div></section>'+answerKeys+'<section class="panel result-section"><h2>Temuan utama</h2>'+issues+'</section><details class="panel result-section"><summary>Rincian tujuh kategori</summary><div class="score-grid">'+cards+'</div></details><section class="panel result-section"><h2>Analisis Grammar</h2><p>'+e(r.grammar.summary)+'</p>'+grammarNotes+'</section>'+revision;
+ lastInput=input;lastData=data;cachedResult={version:2,input,data};try{localStorage.setItem('analisis-butir-result-v2',JSON.stringify(cachedResult));}catch{}$('resultTools').hidden=false;$('reviseBtn').hidden=r.overall.label==='Sangat Sesuai'||!!r.revision;showStep(3);$('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 async function readServiceResponse(response,onProgress){
  if(!response.headers?.get('content-type')?.includes('application/x-ndjson')){
   let data;try{data=await response.json();}catch{throw new Error(response.status===404?'Layanan belum terpasang. Hubungi pengelola untuk memeriksa deployment Netlify Functions.':'Respons server tidak lengkap (HTTP '+response.status+'). Isian tetap tersedia. Hubungi pengelola dengan kode [HTTP_'+response.status+'].');}
-  if(!response.ok)throw new Error(data.error||'Layanan sedang sibuk. Silakan coba kembali.');
+  if(!response.ok){const error=new Error(data.error||'Layanan sedang sibuk. Silakan coba kembali.');error.status=response.status;throw error;}
   return data;
  }
  const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='',terminal=null;
@@ -185,23 +189,75 @@ async function readServiceResponse(response,onProgress){
   return terminal;
  }finally{await reader.cancel().catch(()=>{});reader.releaseLock();}
 }
+
+const pendingJobs={};
+function clearPending(kind){delete pendingJobs[kind];try{localStorage.removeItem('butir-pending-'+kind);}catch{}}
+function savePending(kind,job){pendingJobs[kind]=job;try{localStorage.setItem('butir-pending-'+kind,JSON.stringify(job));}catch{}}
+function pendingFor(kind,fingerprint){
+ let job=pendingJobs[kind];try{job=job||JSON.parse(localStorage.getItem('butir-pending-'+kind)||'null');}catch{}
+ if(job&&job.fingerprint===fingerprint&&Date.now()-job.createdAt<86400000)return job;
+ return null;
+}
+function waitForStatus(ms,signal){return new Promise((resolve,reject)=>{
+ if(signal?.aborted)return reject(signal.reason);
+ const done=()=>{signal?.removeEventListener('abort',abort);resolve();};
+ const timer=setTimeout(done,ms);const abort=()=>{clearTimeout(timer);signal?.removeEventListener('abort',abort);reject(signal.reason);};signal?.addEventListener('abort',abort,{once:true});
+});}
+async function jobRequest(body,signal){
+ const controller=new AbortController(),abort=()=>controller.abort(signal.reason);
+ if(signal?.aborted)throw signal.reason;
+ signal?.addEventListener('abort',abort,{once:true});const timeout=setTimeout(()=>controller.abort(),15000);
+ try{const response=await fetch('/.netlify/functions/jobs',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:controller.signal});return await readServiceResponse(response,()=>{});}
+ finally{clearTimeout(timeout);signal?.removeEventListener('abort',abort);}
+}
+async function backgroundService(kind,payload,onProgress,signal){
+ const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(payload)));
+ const fingerprint=Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('');
+ let job=pendingFor(kind,fingerprint);
+ if(!job){
+  const bytes=crypto.getRandomValues(new Uint8Array(32)),createdAt=Date.now();
+  job={id:String(createdAt)+'-'+Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join(''),createdAt,fingerprint,started:false};savePending(kind,job);
+ }
+ let failures=0;const until=Date.now()+240000;
+ while(Date.now()<until){
+  if(signal?.aborted)throw signal.reason;
+  let state;
+  try{
+   state=await jobRequest(job.started?{action:'status',id:job.id}:{action:'start',id:job.id,kind,payload},signal);
+   job.started=true;savePending(kind,job);failures=0;
+  }catch(error){
+   if(signal?.aborted)throw signal.reason;
+   if(error.status===404&&job.started){job.started=false;savePending(kind,job);continue;}
+   if([400,409,410,413,415].includes(error.status)){clearPending(kind);throw error;}
+   if(/JOB_STORAGE|JOB_DISPATCH|CONFIG_MISSING/.test(error.message))throw error;
+   if(++failures>=3)throw new Error('Koneksi pengecekan status terputus. Klik Coba Lagi untuk memeriksa proses yang sama tanpa mengirim ulang analisis. [STATUS_CONNECTION]');
+   onProgress('Koneksi status terganggu. Mencoba menghubungkan kembali…');await waitForStatus(2000*failures,signal);continue;
+  }
+  if(state.state==='done'){clearPending(kind);return state.data;}
+  if(state.state==='error'){clearPending(kind);throw new Error(state.error||'Pemeriksaan belum berhasil. [JOB_FAILED]');}
+  if(!['queued','running'].includes(state.state))throw new Error('Status pemeriksaan tidak dikenal. [INVALID_JOB_STATUS]');
+  onProgress(state.message||'Pemeriksaan masih berjalan…');await waitForStatus(3000,signal);
+ }
+ throw new Error('Hasil belum diterima. Klik Coba Lagi untuk memeriksa status proses yang sama. [STATUS_WAIT]');
+}
+
 $('analysisForm').noValidate=true;
-$('analysisForm').addEventListener('submit',async event=>{
- event.preventDefault();if(busy)return;
+$('analysisForm').addEventListener('submit',event=>{event.preventDefault();runAnalysis();});
+async function runAnalysis(force=false){
+ if(busy)return;
  showStep(1);if(!validGroup('step1'))return;showStep(2);if(!validGroup('step2'))return;
  const input=payload();if([...Object.values(input.blueprint),...input.stimuli,input.question].some(v=>!v.trim())){showStep(3);$('errorBox').textContent='Field wajib tidak boleh hanya berisi spasi.';$('errorBox').hidden=false;return;}
- saveDraft();invalidate();showStep(3);setBusy(true);$('results').hidden=true;$('errorBox').hidden=true;$('loadingBox').hidden=false;
+ saveDraft();if(!force&&cachedResult?.version===2&&JSON.stringify(cachedResult.input)===JSON.stringify(input)){renderResult(cachedResult.data,input);$('resultStatus').textContent='Menampilkan hasil tersimpan untuk input dan parameter yang sama.';return;}showStep(3);setBusy(true);$('results').hidden=!lastData;$('errorBox').hidden=true;$('retryRequest').hidden=true;$('loadingBox').hidden=false;
  const stages=['Permintaan sedang diproses…','Masih menunggu hasil pemeriksaan…','Mohon tunggu. Isian Anda tetap tersimpan…','Pemeriksaan masih berlangsung…'];let phase=0;$('loadingText').textContent=stages[0];
  let serverProgress=false;const timer=setInterval(()=>{if(serverProgress)return;$('loadingText').textContent=stages[Math.min(++phase,stages.length-1)];},6500);
- const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),65000);
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),260000);
  try{
   if(location.protocol==='file:')throw new Error('Halaman terbuka sebagai file lokal. Jalankan melalui server lokal atau Netlify agar analisis dapat diakses.');
-  const response=await fetch('/.netlify/functions/analyze',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(input),signal:controller.signal});
-  const data=await readServiceResponse(response,message=>{serverProgress=true;$('loadingText').textContent=message;});
+  const data=await backgroundService('analyze',input,message=>{serverProgress=true;$('loadingText').textContent=message;},controller.signal);
   renderResult(data,input);lastInput=input;
- }catch(err){$('errorBox').textContent=err.name==='AbortError'?'Waktu tunggu habis. Input tetap tersimpan; silakan coba kembali.':err instanceof TypeError?'Tidak dapat menghubungi server. Periksa koneksi internet, lalu coba lagi.':err.message;$('errorBox').hidden=false;$('errorBox').scrollIntoView({behavior:'smooth',block:'center'});}
+ }catch(err){$('errorBox').textContent=err.name==='AbortError'?'Waktu tunggu habis. Input tetap tersimpan; silakan coba kembali.':err instanceof TypeError?'Tidak dapat menghubungi server. Periksa koneksi internet, lalu coba lagi.':err.message;$('retryRequest').textContent='Coba Analisis Lagi';$('retryRequest').hidden=false;$('retryRequest').onclick=()=>runAnalysis(true);$('errorBox').hidden=false;$('errorBox').scrollIntoView({behavior:'smooth',block:'center'});}
  finally{clearInterval(timer);clearTimeout(timeout);$('loadingBox').hidden=true;setBusy(false);}
-});
+}
 let selectedImages=[],pendingExtraction=null;
 function startNewAnalysis(){
  if(busy)return;
@@ -209,12 +265,12 @@ function startNewAnalysis(){
  for(const id of fields)$(id).value='';
  $('imageFiles').value='';$('cameraFile').value='';
  selectedImages=[];clearExtraction();updateImagePreviews();imageMessage('');
- second(false);invalidate();
+ second(false);invalidate();cachedResult=null;setInputMode(false);try{localStorage.removeItem('analisis-butir-result-v2');}catch{}
  $('errorBox').hidden=true;$('errorBox').textContent='';$('loadingBox').hidden=true;$('loadingText').textContent='Menyiapkan analisis…';
  $('barrettHelp').textContent='Jenis pemahaman bacaan yang ditargetkan.';
  try{localStorage.removeItem('analisis-butir-draft-v1');$('draftStatus').textContent='Analisis baru. Silakan isi parameter dan kisi-kisi.';}
  catch{saveDraft();}
- setBusy(false);showStep(1);$('type').focus();
+ for(const kind of ['analyze','revise','read-image'])clearPending(kind);setBusy(false);showStep(1);$('type').focus();
 }
 $('startNew').onclick=startNewAnalysis;
 for(const id of ['text1','text2','question'])$('clear'+id).onclick=()=>{
@@ -256,21 +312,41 @@ $('clearImages').onclick=()=>{selectedImages=[];clearExtraction();updateImagePre
 $('readImages').onclick=async()=>{
  if(busy||!selectedImages.length)return;
  clearExtraction();setBusy(true);$('readImages').textContent='Memeriksa gambar…';imageMessage('Memeriksa keterbacaan dan kesesuaian soal Bahasa Inggris…');
- const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),65000);
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),260000);
  try{
   if(location.protocol==='file:')throw new Error('Jalankan aplikasi melalui server atau Netlify untuk membaca gambar.');
-  const response=await fetch('/.netlify/functions/read-image',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({images:selectedImages.map(({mimeType,data})=>({mimeType,data}))}),signal:controller.signal});
-  const body=await readServiceResponse(response,message=>imageMessage(message));
+  const body=await backgroundService('read-image',{images:selectedImages.map(({mimeType,data})=>({mimeType,data}))},message=>imageMessage(message),controller.signal);
   const x=body.result;if(!x?.accepted||!Array.isArray(x.stimuli)||x.stimuli.length<1||x.stimuli.length>2||!x.stimuli.every(t=>typeof t==='string'&&t.trim()&&t.length<=20000)||typeof x.question!=='string'||!x.question.trim()||x.question.length>12000)throw new Error('Hasil pembacaan belum lengkap. Coba kembali dengan foto yang lebih jelas.');
   pendingExtraction=x;$('extractionText').textContent=x.stimuli.map((t,i)=>'Stimulus — Teks '+(i+1)+'\n'+t).join('\n\n')+'\n\nPertanyaan dan opsi / instruksi\n'+x.question;$('extractionReview').hidden=false;imageMessage('Gambar dapat dibaca. Tinjau hasilnya sebelum digunakan.');
- }catch(e){imageMessage(e.name==='AbortError'?'Waktu pembacaan habis. Silakan coba kembali.':e instanceof TypeError?'Tidak dapat menghubungi layanan. Periksa koneksi internet.':e.message,true);}
+ }catch(e){imageMessage(e.name==='AbortError'?'Waktu pengecekan status habis. Klik Baca Gambar lagi untuk memeriksa proses yang sama.':e instanceof TypeError?'Tidak dapat menghubungi layanan. Periksa koneksi internet.':e.message,true);}
  finally{clearTimeout(timeout);setBusy(false);$('readImages').textContent='Baca Gambar';}
 };
 $('applyExtraction').onclick=()=>{
  if(!pendingExtraction||busy)return;
- $('text1').value=pendingExtraction.stimuli[0];$('text2').value=pendingExtraction.stimuli[1]||'';$('question').value=pendingExtraction.question;second(pendingExtraction.stimuli.length===2);invalidate();saveDraft();counts();clearExtraction();imageMessage('Hasil pembacaan sudah masuk ke kolom soal. Periksa atau edit teks, lalu klik Analisis Soal.');$('text1').focus();
+ $('text1').value=pendingExtraction.stimuli[0];$('text2').value=pendingExtraction.stimuli[1]||'';$('question').value=pendingExtraction.question;second(pendingExtraction.stimuli.length===2);invalidate();saveDraft();counts();clearExtraction();imageMessage('Hasil pembacaan sudah masuk ke kolom soal. Periksa atau edit teks, lalu klik Analisis Soal.');setInputMode(false);$('text1').focus();
 };
 
+
+function setInputMode(image){$('imageImport').hidden=!image;$('textMode').setAttribute('aria-pressed',String(!image));$('imageMode').setAttribute('aria-pressed',String(image));}
+$('textMode').onclick=()=>setInputMode(false);$('imageMode').onclick=()=>setInputMode(true);
+$('saveTemplate').onclick=()=>{if(!validGroup('step1'))return;try{localStorage.setItem('analisis-butir-template-v1',JSON.stringify(Object.fromEntries(fields.slice(0,7).map(id=>[id,$(id).value]))));$('templateStatus').textContent='Template parameter tersimpan di perangkat ini.';}catch{$('templateStatus').textContent='Template tidak dapat disimpan pada perangkat ini.';}};
+$('loadTemplate').onclick=()=>{try{const template=JSON.parse(localStorage.getItem('analisis-butir-template-v1')||'null');if(!template){$('templateStatus').textContent='Belum ada template tersimpan.';return;}for(const id of fields.slice(0,7))if(typeof template[id]==='string')$(id).value=template[id];invalidate();saveDraft();$('barrettHelp').textContent=descriptions[$('barrett').value]||'';$('templateStatus').textContent='Template diterapkan. Periksa kisi-kisi untuk soal ini.';}catch{$('templateStatus').textContent='Template tidak dapat dibaca.';}};
+$('reanalyze').onclick=()=>runAnalysis(true);
+$('copyResult').onclick=async()=>{try{await navigator.clipboard.writeText($('results').innerText);$('resultStatus').textContent='Hasil telaah disalin.';}catch{$('resultStatus').textContent='Penyalinan tidak tersedia. Pilih teks hasil, lalu salin secara manual.';}};
+$('results').addEventListener('click',event=>{const button=event.target.closest('[data-side]');if(!button)return;const original=button.dataset.side==='original';$('results').classList.toggle('show-original',original);for(const b of $('results').querySelectorAll('[data-side]'))b.setAttribute('aria-pressed',String(b===button));});
+async function requestRevision(){
+ if(busy||!lastInput||!lastData)return;
+ setBusy(true);$('errorBox').hidden=true;$('retryRequest').hidden=true;$('loadingBox').hidden=false;$('loadingText').textContent='Menyusun revisi sesuai parameter, termasuk target CEFR…';
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),260000);
+ try{
+  const data=await backgroundService('revise',{input:lastInput,analysis:lastData.result},message=>{$('loadingText').textContent=message;},controller.signal);const r=data.revision;
+  if(!r||!Array.isArray(r.stimuli)||r.stimuli.length!==lastInput.stimuli.length||!r.stimuli.every(t=>typeof t==='string'&&t.trim())||typeof r.question!=='string'||!r.question.trim()||!r.answerKey||typeof r.rationale!=='string')throw new Error('Revisi belum lengkap. Coba buat revisi kembali.');
+  renderResult({result:{...lastData.result,revision:r}},lastInput);$('resultStatus').textContent='Revisi selesai. Tinjau perubahan dan kunci jawaban revisi.';
+ }catch(error){$('errorBox').textContent=(error.name==='AbortError'?'Waktu penyusunan revisi habis.':error instanceof TypeError?'Koneksi terputus saat menyusun revisi.':error.message)+' Hasil analisis tetap tersedia.';$('errorBox').hidden=false;$('retryRequest').textContent='Coba Revisi Lagi';$('retryRequest').hidden=false;$('retryRequest').onclick=requestRevision;}
+ finally{clearTimeout(timeout);$('loadingBox').hidden=true;setBusy(false);}
+}
+$('reviseBtn').onclick=requestRevision;
+try{const saved=JSON.parse(localStorage.getItem('analisis-butir-result-v2')||'null');if(saved?.version===2){cachedResult=saved;if(JSON.stringify(saved.input)===JSON.stringify(payload())){renderResult(saved.data,saved.input);$('resultStatus').textContent='Hasil terakhir dipulihkan dari perangkat ini.';}}}catch{cachedResult=null;}
 </script>
 </body>
 </html>

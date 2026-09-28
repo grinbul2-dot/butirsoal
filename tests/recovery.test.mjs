@@ -42,3 +42,14 @@ test('endpoint waits for complete JSON even for an old streaming client',async()
  const response=await pending;assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/application\/json/);assert.equal((await response.json()).result.done,true);
  const error=await endpoint(async()=>reply(503,{error:'Konfigurasi belum lengkap'}))(new Request('https://example.test'));assert.equal(error.status,503);assert.equal((await error.json()).error,'Konfigurasi belum lengkap');
 });
+test('background budget reserves fallback after a slow primary without the 25s cutoff',async()=>{
+ const old={...process.env};process.env.GEMINI_API_KEY='test';process.env.GEMINI_MODEL='primary';process.env.GEMINI_FALLBACK_MODEL='backup';
+ let time=0,timer,calls=0;const deadlines=[];
+ try{
+  const result=await generateWithRecovery({body:{},validate:x=>x,budgetMs:180000,attemptMs:80000,reserveFallback:true},{now:()=>time,setTimeout:(fn,ms)=>{timer=fn;deadlines.push(ms);return 1;},clearTimeout:()=>{},sleep:async()=>{throw new Error('timeout must go directly to fallback');},fetch:async(url,options)=>{
+   calls++;if(calls===1){time+=80000;timer();assert.equal(options.signal.aborted,true);throw new Error('aborted');}
+   assert.match(url,/backup/);time+=40000;return ok({done:true});
+  }});
+  assert.equal(result.done,true);assert.equal(calls,2);assert.deepEqual(deadlines,[80000,80000]);assert.equal(time,120000);
+ }finally{for(const name of ['GEMINI_API_KEY','GEMINI_MODEL','GEMINI_FALLBACK_MODEL']){if(old[name]===undefined)delete process.env[name];else process.env[name]=old[name];}}
+});
