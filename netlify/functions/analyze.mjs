@@ -8,7 +8,7 @@ export async function handleRequest(event,onProgress,signal,recoveryOptions={}){
  if(!event.body||Buffer.byteLength(event.body)>200000)return reply(413,{error:'Data terlalu besar atau kosong.'});
  let input;try{input=validateInput(JSON.parse(event.body));}catch(e){return reply(400,{error:e instanceof InputError?e.message:'Data JSON tidak valid.'});}
  try{
-  const result=await generateWithRecovery({...recoveryOptions,onProgress,signal,validate:value=>validateAnalysis(value,input),body:{systemInstruction:{parts:[{text:ANALYSIS_PROMPT}]},contents:[{role:'user',parts:[{text:JSON.stringify(input)}]}],generationConfig:{temperature:1,responseMimeType:'application/json',responseJsonSchema:analysisSchema,maxOutputTokens:7000}}});
+  const result=await generateWithRecovery({...recoveryOptions,provider:'groq',onProgress,signal,validate:value=>validateAnalysis(value,input),body:{systemInstruction:{parts:[{text:ANALYSIS_PROMPT}]},contents:[{role:'user',parts:[{text:JSON.stringify(input)}]}],generationConfig:{temperature:1,responseMimeType:'application/json',responseJsonSchema:analysisSchema,maxOutputTokens:7000}}});
   return reply(200,{result});
  }catch(e){return reply(e.status||502,{error:e.status?e.message:'Koneksi layanan terputus. Silakan coba kembali; isian Anda tetap tersedia.'});}
 }

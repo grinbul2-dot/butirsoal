@@ -1,9 +1,9 @@
 {
   "name": "analisis-butir-soal",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Analisis satu soal Bahasa Inggris terhadap kisi-kisi dengan Gemini, Barrett, dan Bloom",
+  "description": "Analisis soal Bahasa Inggris dengan Groq dan pembacaan gambar dengan Gemini",
   "engines": {
     "node": ">=22"
   },

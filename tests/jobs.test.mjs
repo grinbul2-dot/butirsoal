@@ -31,7 +31,7 @@ test('worker persists terminal provider error and stale jobs provide bounded rec
  assert.match(publicJob({state:'running',createdAt:0},JOB_LIMIT+1).error,/JOB_STALLED/);
 });
 test('jobs API validates, hides private data and reports missing store/worker clearly',async()=>{
- const old=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='test';
+ const old=process.env.GROQ_API_KEY;process.env.GROQ_API_KEY='test';
  try{
   const store=memoryStore();let dispatched;
   const handler=createJobsHandler({store,dispatch:async data=>{dispatched=data;}});
@@ -44,5 +44,5 @@ test('jobs API validates, hides private data and reports missing store/worker cl
   const failedDispatch=createJobsHandler({store,dispatch:async()=>{throw Error('JOB_DISPATCH');}});
   assert.match((await (await failedDispatch(request({action:'start',id:jobId,kind:'analyze',payload:input}))).json()).error,/JOB_DISPATCH/);
   const expired=(Date.now()-JOB_TTL-1)+'-'+'b'.repeat(64);assert.equal((await handler(request({action:'status',id:expired}))).status,410);
- }finally{if(old)process.env.GEMINI_API_KEY=old;else delete process.env.GEMINI_API_KEY;}
+ }finally{if(old)process.env.GROQ_API_KEY=old;else delete process.env.GROQ_API_KEY;}
 });

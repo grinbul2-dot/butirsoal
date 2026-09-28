@@ -1,32 +1,32 @@
-# Hasil pengujian paket v1.2.0
+# Hasil pengujian v2.0.0
 
-## Lulus: 17 pengujian otomatis
+36 pengujian otomatis lulus melalui npm test.
 
-Dijalankan dengan `npm test` pada Node.js 24; proyek mensyaratkan Node.js minimal 22.
+- Kontrak output kembali ke tujuh skor langsung, label dan penjelasan.
+- Rata-rata dihitung oleh server. Tidak ada 28 nilai kriteria atau pemeriksaan kecocokan kutipan.
+- Kunci asli/revisi, kelengkapan hasil dan jumlah stimulus tetap diperiksa.
+- Analisis diterima tanpa revisi; endpoint revisi terpisah memeriksa kelengkapan stimulus dan kunci revisi.
+- Cache input identik menghindari panggilan ulang. Kegagalan revisi mempertahankan analisis dan tombol coba lagi hanya memanggil revisi.
+- Tiga halaman, reset, Clear, OCR alternatif dan rendering aman tetap diuji.
+- Retry dan fallback tetap diuji. Endpoint sinkron lama mempertahankan batas 25 detik; alur latar belakang baru diuji dengan anggaran 180 detik dan simulasi model utama timeout 80 detik lalu cadangan selesai 40 detik kemudian.
 
-1. Input tipe bebas dan 1–2 stimulus diterima.
-2. Input kosong, kategori tidak valid, kelas di luar 1–12, dan panjang berlebih ditolak.
-3. Rata-rata dihitung ulang server dan urutan kategori dinormalisasi.
-4. Revisi dibuang ketika label keseluruhan Sangat Sesuai.
-5. Label lain mensyaratkan revisi utuh dengan jumlah teks yang sesuai.
-6. Kategori duplikat, label tidak dikenal, dan skor di luar rentang ditolak.
-7. Metode HTTP, format data, input tidak valid, dan API key kosong menghasilkan pesan yang sesuai.
-8. Proxy meminta structured JSON dan menangani kuota serta output terpotong; diuji dengan simulasi respons penyedia.
-9. JavaScript frontend berhasil dimuat dalam lingkungan uji; perbandingan kata mempertahankan teks asli/revisi dan mengamankan markup.
-10. Renderer menghasilkan tujuh kartu, dua teks lengkap dalam perbandingan, dan menghilangkan panel revisi pada label Sangat Sesuai.
-11. HTML yang berasal dari hasil model ditampilkan sebagai teks, bukan kode aktif.
+Tes menggunakan respons simulasi. Belum ada bukti bahwa semua soal akan berhasil di produksi; API key, kuota dan latensi tetap memengaruhi layanan.
+Instruksi revisi kini mencakup semua parameter dan adaptasi CEFR pada stimulus, stem, opsi serta instruksi. Pengujian kontrak bukan verifikasi empiris bahwa adaptasi CEFR selalu tepat.
 
-12. Kunci jawaban asli dan revisi wajib tersedia; status ambigu diperbolehkan.
-13. Format/signature gambar, jumlah gambar, dan batas payload diperiksa.
-14. Transkripsi diterima hanya bila lengkap; penolakan tidak meneruskan teks tebakan.
-15. Pesan file tidak didukung dibedakan dari gangguan konfigurasi/layanan.
-16. Endpoint mengirim image parts dan menangani penerimaan, penolakan, serta kuota (respons simulasi).
-17. Hasil foto ditinjau sebelum menimpa isian; penolakan mempertahankan isian sebelumnya.
+Tampilan diuji melalui simulasi DOM, belum melalui pemeriksaan visual browser. Paket belum diterbitkan ke Netlify dari sesi ini.
 
-## Belum diverifikasi
+- Worker terpisah dari koneksi browser, autentikasi secret worker, klaim atomik, hasil terminal, dan penghapusan input dari catatan diuji memakai penyimpanan simulasi.
+- Polling yang kehilangan koneksi melanjutkan ID pekerjaan yang sama tanpa start kedua.
+- Error penyimpanan, dispatch, ID tidak valid dan kedaluwarsa memiliki pesan khusus.
+- Dependency @netlify/blobs dipasang versi terkunci 11.1.1. Netlify Blobs dan pemanggilan background nyata belum diuji pada akun pengguna.
 
-- Pembacaan gambar nyata, kualitas OCR, dan hasil analisis langsung dari Gemini: API key belum tersedia.
-- Deploy produksi Netlify: akses akun/target belum tersedia.
-- Kamera fisik dan pemeriksaan visual browser desktop/HP: browser pratinjau tidak dapat diakses di lingkungan pengerjaan. CSS responsif sudah disiapkan, tetapi pemeriksaan visual bukan bagian dari hasil lulus di atas.
+## Pengujian migrasi Groq
 
-Respons simulasi hanya dipakai tes. Aplikasi produksi tidak menampilkan skor buatan ketika Gemini tidak tersedia.
+- Analisis dan revisi menggunakan endpoint Groq, Authorization Bearer GROQ_API_KEY, strict JSON schema dan format respons choices.
+- Pembacaan gambar tetap memakai Gemini dan GEMINI_API_KEY. Input PDF/Word tidak ditambahkan.
+- Antrian analisis dapat dimulai tanpa GEMINI_API_KEY; antrian gambar dapat dimulai tanpa GROQ_API_KEY. Kekurangan key yang relevan dilaporkan sebelum worker dipanggil.
+- 429 Groq beralih dari model 120B ke 20B tanpa mengirim permintaan ke Gemini.
+- Refusal, respons terpotong dan key kosong tidak diterima sebagai hasil sukses.
+- Schema transport tidak mengubah schema semantik. Validasi skor dan jumlah kategori tetap dijalankan.
+
+Belum dilakukan panggilan dengan API key pengguna atau deploy ke akun Netlify pengguna. Tes menggunakan respons simulasi, sehingga bukan jaminan ketersediaan kuota maupun akurasi pedagogis.

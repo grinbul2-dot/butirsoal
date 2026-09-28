@@ -8,7 +8,7 @@ export async function handleRequest(event,onProgress,signal,recoveryOptions={}){
  if(!event.body||Buffer.byteLength(event.body)>400000)return reply(413,{error:'Data terlalu besar atau kosong.'});
  let input,analysis;try{const data=JSON.parse(event.body);input=validateInput(data.input);analysis=validateAnalysis(data.analysis,input);}catch(e){return reply(400,{error:e instanceof InputError?e.message:'Data JSON tidak valid.'});}
  try{
-  const result=await generateWithRecovery({...recoveryOptions,onProgress,signal,validate:value=>validateRevision(value,input),body:{systemInstruction:{parts:[{text:REVISION_PROMPT}]},contents:[{role:'user',parts:[{text:JSON.stringify({input,analysis})}]}],generationConfig:{temperature:1,responseMimeType:'application/json',responseJsonSchema:revisionSchema,maxOutputTokens:12000}}});
+  const result=await generateWithRecovery({...recoveryOptions,provider:'groq',onProgress,signal,validate:value=>validateRevision(value,input),body:{systemInstruction:{parts:[{text:REVISION_PROMPT}]},contents:[{role:'user',parts:[{text:JSON.stringify({input,analysis})}]}],generationConfig:{temperature:1,responseMimeType:'application/json',responseJsonSchema:revisionSchema,maxOutputTokens:12000}}});
   return reply(200,{revision:result});
  }catch(e){return reply(e.status||502,{error:e.status?e.message:'Koneksi layanan terputus. Silakan coba kembali; isian Anda tetap tersedia.'});}
 }

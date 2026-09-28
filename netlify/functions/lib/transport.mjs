@@ -4,7 +4,7 @@ export function endpoint(handle){return async request=>{
  try{
   const event={httpMethod:request.method,headers:Object.fromEntries(request.headers),body:request.method==='POST'?await request.text():''};
   const r=await handle(event,()=>{},request.signal);
-  return new Response(r.body,{status:r.statusCode,headers:{...r.headers,'X-App-Version':'1.9.0'}});
+  return new Response(r.body,{status:r.statusCode,headers:{...r.headers,'X-App-Version':'2.0.0'}});
  }catch{
   const r=reply(502,{error:'Permintaan terhenti sebelum selesai. Silakan coba kembali. [REQUEST_INTERRUPTED]'});
   return new Response(r.body,{status:r.statusCode,headers:r.headers});
