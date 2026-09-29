@@ -54,8 +54,14 @@ export async function runJob({id,secret},deps={}){
  const claim=await store.setJSON(id,running,{onlyIfMatch:current.etag});
  if(!claim.modified)return;
  console.info(JSON.stringify({event:'job_started',kind:job.kind}));
+ let etag=claim.etag;
+ const write=async value=>{
+  const saved=await store.setJSON(id,value,{onlyIfMatch:etag});
+  if(saved.modified)etag=saved.etag;
+  return saved.modified;
+ };
  let progress=Promise.resolve();
- const update=message=>{progress=progress.then(()=>store.setJSON(id,{...running,message})).catch(()=>{});};
+ const update=message=>{progress=progress.then(()=>write({...running,message})).catch(()=>{});};
  let final;
  try{
   const handler=deps.execute||(job.kind==='analyze'?analyze:job.kind==='revise'?revise:readImage);
@@ -67,6 +73,6 @@ export async function runJob({id,secret},deps={}){
  }
  await progress;
  // Do not retain the source input or worker secret after processing finishes.
- await store.setJSON(id,{...final,kind:job.kind,fingerprint:job.fingerprint,createdAt:job.createdAt});
+ await write({...final,kind:job.kind,fingerprint:job.fingerprint,createdAt:job.createdAt});
  console.info(JSON.stringify({event:'job_finished',kind:job.kind,state:final.state,elapsedMs:now()-job.createdAt}));
 }

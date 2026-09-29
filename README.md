@@ -1,31 +1,22 @@
-# Analisis Butir Soal — v2.1.0
+# Analisis Butir Soal — v2.2.0
 
-Aplikasi guru Bahasa Inggris untuk menelaah satu butir soal menurut tipe soal, jenis teks, Barrett, kisi-kisi, Bloom, CEFR dan grammar. Seluruh pemrosesan menggunakan **Groq dengan model qwen/qwen3.8-27b**, termasuk pembacaan gambar. Hanya GROQ_API_KEY dan GROQ_MODEL yang digunakan pada alur aplikasi; key Gemini tidak diperlukan.
+Aplikasi telaah soal Bahasa Inggris berdasarkan tipe soal, jenis teks, Barrett, kisi-kisi, Bloom, CEFR dan grammar. Gemini digunakan untuk pembacaan gambar, analisis, dan revisi. Identitas layanan/model tidak ditampilkan pada hasil telaah.
 
 ## Alur
 
-1. Isi parameter dan kisi-kisi; template parameter dapat disimpan lokal.
-2. Tempel teks atau unggah JPG/PNG/WebP/foto kamera (maksimal 3 gambar berurutan). PDF dan Word tidak didukung. Tinjau transkripsi sebelum diterapkan. Gambar buram/tidak sesuai ditolak dengan alasan; tersedia tautan OCR alternatif.
-3. Lihat analisis, kunci jawaban dan temuan. Klik Buat Revisi Sesuai Parameter untuk revisi terpisah yang mencakup target CEFR. Gagal revisi tidak menghapus analisis.
+1. Parameter dan kisi-kisi. Parameter dikunci ketika melanjutkan.
+2. Input teks atau unggah gambar/kamera. Analisis gagal tetap di halaman ini dengan isian utuh. Pembacaan gambar dipratinjau sebelum diterapkan; gambar tidak dikirim ulang untuk analisis teks.
+3. Hasil analisis dan kunci jawaban. Tidak ada navigasi kembali atau analisis ulang dari hasil.
+4. Revisi yang berhasil otomatis memulai siklus baru pada halaman Parameter. Parameter sebelumnya dan soal revisi terisi; ringkasan revisi tampil di halaman 1, teks siap pada halaman 2. Revisi gagal mempertahankan hasil sebelumnya.
 
-Input teks langsung tidak menjalankan pembacaan gambar. Transkripsi dipakai kembali; gambar tidak dikirim ulang pada analisis atau revisi. Semua gambar dan teks yang diproses dikirim ke Groq. Hasil telaah tidak menampilkan identitas layanan/model.
+START FRESH pada halaman 3 menghapus seluruh isian, gambar, hasil, parameter, dan penanda pekerjaan dari siklus sebelumnya. Draf, template, dan cache lokal versi lama juga dihapus saat aplikasi dibuka. Tidak ada penyimpanan isian otomatis di perangkat; memuat ulang halaman memulai dari kosong.
 
-Groq memakai strict JSON schema, disertai validasi server terhadap skor 1–100, tujuh kategori unik, kunci dan kelengkapan revisi. Rata-rata dihitung server. Tidak ada mesin penilaian 28 kriteria. Struktur JSON benar bukan jaminan ketepatan isi; estimasi CEFR dan klasifikasi tetap perlu ditinjau guru.
+Setiap siklus memakai pekerjaan baru. Saat reset, aplikasi meminta penghapusan data pekerjaan server; worker terlambat tidak dapat membuatnya kembali. Jika koneksi terputus saat penghapusan, pembersihan server terjadwal menangani data kedaluwarsa (TTL 24 jam). Reset tidak membatalkan permintaan provider yang sudah berjalan.
 
-## Keandalan
+## Server
 
-Jobs dan process-background memakai Netlify Blobs untuk pekerjaan terpisah dari koneksi browser. Anggaran layanan 180 detik, maksimal 80 detik per panggilan. Retry dibatasi; hanya model Qwen yang sama digunakan, tanpa fallback ke GPT atau Gemini. Saat koneksi putus, browser memeriksa pekerjaan yang sama untuk menghindari panggilan ganda. Klaim worker menggunakan ETag atomik.
+Netlify Background Functions dan Blobs menangani pekerjaan serta polling status untuk menghindari menunggu satu koneksi panjang. Retry dan fallback dibatasi waktu. Perubahan alur mencegah pemakaian hasil/siklus lama; tidak menjamin gangguan provider seperti HTTP 503 tidak terjadi.
 
-Cache analisis versi lama tidak digunakan otomatis pada v2.1.0; draf parameter dan soal tetap dipertahankan. START NEW ANALYSIS menghapus draf, hasil dan penanda pekerjaan lokal, mempertahankan template manual. Reset tidak membatalkan worker yang sudah berjalan.
+Validasi server memeriksa tujuh kategori, skor, kunci dan kelengkapan revisi. Rubrik 28 kriteria tidak digunakan. Ketepatan isi tetap perlu ditinjau guru.
 
-## Penyimpanan
-
-API key hanya di server. Input/gambar dan secret worker dihapus dari catatan setelah pekerjaan selesai. Hasil sementara tidak dapat diakses setelah 24 jam; cleanup-jobs menghapus catatan kedaluwarsa setiap hari. Penyimpanan fisik bisa mendekati 48 jam jika jadwal berjalan normal. Token pekerjaan acak merupakan hak akses hasil dan tidak boleh dibagikan. Draf/hasil/template disimpan lokal di browser; gambar tidak disimpan di localStorage.
-
-## Deploy dan pengujian
-
-Ikuti DEPLOY-NETLIFY.md. Ubah GROQ_MODEL menjadi qwen/qwen3.8-27b; variabel lama dapat mengalahkan default paket. Variabel GEMINI_* serta GROQ_FALLBACK_MODEL tidak digunakan oleh alur aplikasi.
-
-Node 22+: `npm ci`, `npm test`, `npm run dev`. Server lokal memakai penyimpanan memori untuk simulasi antrian; produksi memakai Netlify Blobs. Tidak ada dependency frontend tambahan. Endpoint sinkron lama tetap tersedia dengan batas 25 detik, tetapi frontend memakai alur jobs.
-
-37 pengujian simulasi lulus. Belum diuji dengan API key pengguna atau deployment Netlify nyata. Ketersediaan model, kuota dan akurasi pedagogis memerlukan verifikasi pada akun dan contoh soal pengguna.
+Lihat DEPLOY-NETLIFY.md untuk konfigurasi. Jalankan `npm ci`, lalu `npm test`; `npm run dev` untuk server lokal. Pengujian otomatis memakai respons tiruan, bukan panggilan provider berbayar.

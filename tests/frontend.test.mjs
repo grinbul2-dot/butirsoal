@@ -8,7 +8,7 @@ const source=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 function runtime(){
  const elements=new Map();
  for(const [,id] of html.matchAll(/id="([^"]+)"/g))elements.set(id,{value:'',hidden:true,innerHTML:'',textContent:'',required:false,disabled:false,classList:{toggle(){}},setAttribute(){},removeAttribute(){},addEventListener(){},querySelectorAll(){return[];},scrollIntoView(){},focus(){}});
- const context=vm.createContext({document:{getElementById:id=>elements.get(id),querySelectorAll:()=>[]},localStorage:{getItem:()=>null,setItem(){}},setTimeout,clearTimeout,setInterval,clearInterval,AbortController,TextDecoder,TextEncoder,console,crypto:webcrypto});
+ const context=vm.createContext({document:{getElementById:id=>elements.get(id),querySelectorAll:()=>[]},localStorage:{getItem:()=>null,setItem(){}},setTimeout,clearTimeout,setInterval,clearInterval,AbortController,TextDecoder,TextEncoder,structuredClone,console,crypto:webcrypto});
  vm.runInContext(source,context);
  return {context,elements};
 }
@@ -64,7 +64,7 @@ test('three pages isolate input from results; fresh start removes draft, images 
  context.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};
  context.showStep(1);assert.equal(elements.get('step1').hidden,false);assert.equal(elements.get('step2').hidden,true);assert.equal(elements.get('step3').hidden,true);
  context.showStep(2);assert.equal(elements.get('step1').hidden,true);assert.equal(elements.get('step2').hidden,false);
- vm.runInContext("for(const id of fields)$(id).value='Old value';selectedImages=[{name:'old.jpg',data:'abc',mimeType:'image/jpeg'}];pendingExtraction={accepted:true};lastInput={question:'Old'};second(true);saveTimer=setTimeout(saveDraft,250);",context);
+ vm.runInContext("for(const id of fields)$(id).value='Old value';selectedImages=[{name:'old.jpg',data:'abc',mimeType:'image/jpeg'}];pendingExtraction={accepted:true};lastInput={question:'Old'};lastData={};second(true);saveTimer=setTimeout(saveDraft,250);",context);
  context.showStep(3);assert.equal(elements.get('inputWorkspace').hidden,true);assert.equal(elements.get('step3').hidden,false);assert.equal(elements.get('progressLabel').textContent,'Halaman 3 dari 3');
  elements.get('results').innerHTML='Old result';elements.get('imageFiles').value='Old file';elements.get('cameraFile').value='Old camera';
  elements.get('startNew').onclick();
@@ -72,20 +72,34 @@ test('three pages isolate input from results; fresh start removes draft, images 
  assert.equal(vm.runInContext('selectedImages.length',context),0);assert.equal(vm.runInContext('pendingExtraction',context),null);assert.equal(vm.runInContext('lastInput',context),null);
  assert.equal(storage.has('analisis-butir-draft-v1'),false);
  assert.equal(elements.get('results').innerHTML,'');assert.equal(elements.get('imagePreviews').innerHTML,'');assert.equal(elements.get('imageFiles').value,'');assert.equal(elements.get('cameraFile').value,'');
- assert.equal(elements.get('secondText').hidden,true);assert.equal(elements.get('text2').required,false);assert.equal(elements.get('step1').hidden,false);assert.equal(elements.get('inputWorkspace').hidden,false);assert.equal(elements.get('step3').hidden,true);assert.equal(elements.get('tab3').disabled,true);
+ assert.equal(elements.get('secondText').hidden,true);assert.equal(elements.get('text2').required,false);assert.equal(elements.get('step1').hidden,false);assert.equal(elements.get('inputWorkspace').hidden,false);assert.equal(elements.get('step3').hidden,true);
 });
-test('cached analysis avoids calls; failed revision preserves result and retries only revision',async()=>{
+test('one-way flow keeps failures on page 2 and revision begins a new parameter cycle',async()=>{
  const {context,elements}=runtime();context.location={protocol:'http:'};
  for(const id of ['type','genre','barrett','kisi','bloom','cefr','text1','question'])elements.get(id).value='Filled';
- const input=context.payload();
+ context.goNext();assert.equal(context.showStep(1),false);
+ elements.get('cefr').value='Changed after lock';
  const result={answerKey:{status:'Ditentukan',answer:'A',explanation:'Evidence'},categories:['type','genre','barrett','kisi','bloom','cefr','grammar'].map(id=>({id,score:80,label:'Sesuai',target:'Target',identified:'Found',analysis:'Reason',evidence:'Text'})),overall:{score:80,label:'Sesuai',reason:'Improve'},grammar:{summary:'OK',notes:[]},issues:[]};
- context.renderResult({result},input);const before=elements.get('results').innerHTML;
- let calls=0;context.fetch=async url=>{calls++;assert.equal(url,'/.netlify/functions/jobs');return {ok:true,json:async()=>({state:'error',error:'Server sibuk [UPSTREAM_429]'})};};
- await context.runAnalysis();assert.equal(calls,0);assert.match(elements.get('resultStatus').textContent,/tersimpan/);
- await context.requestRevision();assert.equal(calls,1);assert.equal(elements.get('results').innerHTML,before);assert.equal(elements.get('results').hidden,false);
- context.fetch=async url=>{calls++;assert.equal(url,'/.netlify/functions/jobs');return {ok:true,json:async()=>({state:'done',data:{revision:{stimuli:['Revised'],question:'New question',rationale:'Adjusted CEFR',answerKey:result.answerKey}}})};};
- await elements.get('retryRequest').onclick();assert.equal(calls,2);assert.match(elements.get('results').innerHTML,/Adjusted CEFR/);assert.equal(elements.get('retryRequest').hidden,true);
- context.invalidate();assert.equal(elements.get('resultTools').hidden,true);assert.equal(vm.runInContext('lastData',context),null);
+ let calls=0;context.backgroundService=async(kind,input)=>{calls++;assert.equal(input.blueprint.cefr,'Filled');throw Error('Busy');};
+ await context.runAnalysis();assert.equal(elements.get('step2').hidden,false);assert.equal(elements.get('question').value,'Filled');
+ context.backgroundService=async()=>{calls++;return {result};};
+ await context.runAnalysis();assert.equal(elements.get('step3').hidden,false);assert.equal(context.showStep(2),false);
+ await context.runAnalysis();assert.equal(calls,2);
+ const before=elements.get('results').innerHTML;
+ context.backgroundService=async()=>{throw Error('Busy');};
+ await context.requestRevision();assert.equal(elements.get('results').innerHTML,before);assert.equal(elements.get('step3').hidden,false);
+ context.backgroundService=async()=>({revision:{stimuli:['Revised'],question:'New question',rationale:'Adjusted CEFR',answerKey:result.answerKey}});
+ await context.requestRevision();assert.equal(elements.get('step1').hidden,false);assert.equal(elements.get('revisionSeed').hidden,false);assert.equal(elements.get('text1').value,'Revised');assert.equal(elements.get('cefr').value,'Filled');assert.equal(vm.runInContext('lastData',context),null);
+ context.goNext();assert.equal(elements.get('step2').hidden,false);
+});
+test('reload and fresh reset purge all application storage but preserve unrelated storage',()=>{
+ const {context,elements}=runtime();
+ const data=new Map([['analisis-butir-result-v99','old'],['analisis-butir-template-v1','old'],['butir-pending-analyze','old'],['unrelated','keep']]);
+ context.localStorage={get length(){return data.size;},key:i=>[...data.keys()][i],removeItem:k=>data.delete(k)};
+ context.sessionStorage=context.localStorage;
+ context.purgeStoredData();assert.deepEqual([...data.keys()],['unrelated']);
+ context.startNewAnalysis();assert.equal(elements.get('revisionSeed').hidden,true);assert.equal(elements.get('step1').hidden,false);
+ assert.ok(!source.includes('localStorage.setItem'));assert.ok(!source.includes('localStorage.getItem'));
 });
 test('background polling resumes the same job after connection loss without a second start',async()=>{
  const {context}=runtime();context.waitForStatus=async()=>{};

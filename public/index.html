@@ -51,14 +51,14 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 <header class="masthead"><div class="mast-inner"><div class="brand">SWISS ARMY TOOLS FOR ENGLISH TEACHERS</div><small>Ruang kerja guru Bahasa Inggris</small></div></header>
 <main class="page">
 <div class="intro"><div><h1>Analisis Butir Soal</h1><p>Telaah satu soal secara mendalam. Cocokkan dengan kisi-kisi, pahami alasannya, dan tinjau perbaikannya.</p></div><span class="outline-label">Barrett &amp; Bloom revisi</span></div>
-<div class="form-head page-navigation"><div id="progressLabel" class="progress-label">Halaman 1 dari 3</div><nav class="steps" aria-label="Halaman aplikasi"><button type="button" id="tab1" class="step active" aria-current="step"><span>1</span>Parameter &amp; Kisi-kisi</button><button type="button" id="tab2" class="step"><span>2</span>Butir Soal</button><button type="button" id="tab3" class="step" disabled><span>3</span>Analisis &amp; Telaah</button></nav></div>
-<div id="inputWorkspace" class="workspace">
+<div class="form-head page-navigation"><div id="progressLabel" class="progress-label">Halaman 1 dari 3</div><nav class="steps" aria-label="Halaman aplikasi"><div id="tab1" class="step active" aria-current="step"><span>1</span>Parameter &amp; Kisi-kisi</div><div id="tab2" class="step"><span>2</span>Butir Soal</div><div id="tab3" class="step"><span>3</span>Analisis &amp; Telaah</div></nav></div>
+<section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Pemeriksaan berjalan di latar belakang. Status diperbarui otomatis; jangan mengirim ulang soal selama proses berlangsung.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section><button type="button" id="retryRequest" hidden>Coba Lagi</button><div id="inputWorkspace" class="workspace">
 <section class="panel" aria-label="Form analisis">
 
 <form id="analysisForm" class="form-body">
-<div id="step1">
+<div id="step1"><section id="revisionSeed" class="notice" hidden><h3>Revisi siap untuk siklus baru</h3><p id="revisionReason"></p><details><summary>Lihat soal revisi dan kunci</summary><pre id="revisionSeedText" class="quote"></pre></details><p class="small">Periksa parameter di bawah, lalu lanjutkan. Soal revisi otomatis mengisi halaman Butir Soal.</p></section>
 <div class="section-lead"><h2>Tentukan target soal</h2><p>Semua field kisi-kisi wajib diisi. Kelas bersifat opsional.</p></div>
-<div class="image-actions"><button type="button" id="saveTemplate">Simpan Template Parameter</button><button type="button" id="loadTemplate">Gunakan Template</button></div><p id="templateStatus" class="help" role="status"></p><div class="fields"><div class="field full"><label for="kisi">Kisi-kisi</label><textarea id="kisi" name="kisi" rows="5" required maxlength="12000" placeholder="Ketik atau copy paste kisi-kisi untuk soal ini di sini…&#10;&#10;Contoh: Disajikan teks narrative berupa cerita rakyat pendek, siswa dapat menyimpulkan sifat tokoh utama berdasarkan tindakannya." aria-describedby="kisiHelp"></textarea><div id="kisiHelp" class="help">Tempel kisi-kisi yang menjadi acuan soal ini. Boleh mencakup kompetensi, indikator, materi, dan ruang lingkup.</div></div>
+<div class="fields"><div class="field full"><label for="kisi">Kisi-kisi</label><textarea id="kisi" name="kisi" rows="5" required maxlength="12000" placeholder="Ketik atau copy paste kisi-kisi untuk soal ini di sini…&#10;&#10;Contoh: Disajikan teks narrative berupa cerita rakyat pendek, siswa dapat menyimpulkan sifat tokoh utama berdasarkan tindakannya." aria-describedby="kisiHelp"></textarea><div id="kisiHelp" class="help">Tempel kisi-kisi yang menjadi acuan soal ini. Boleh mencakup kompetensi, indikator, materi, dan ruang lingkup.</div></div>
 <div class="field"><label for="type">Tipe soal</label><input id="type" name="type" required maxlength="4000" placeholder="Contoh: Pilihan Ganda Kompleks" list="types"><datalist id="types"><option>Pilihan Ganda</option><option>Pilihan Ganda Kompleks</option><option>Pilihan Ganda Kompleks Kategori</option><option>Isian</option><option>Menjodohkan</option><option>Uraian</option></datalist><div class="help">Boleh ketik tipe lain sesuai kebutuhan.</div></div>
 <div class="field"><label for="genre">Jenis teks</label><input id="genre" name="genre" required maxlength="4000" placeholder="Contoh: Narrative" list="genres"><datalist id="genres"><option>Narrative</option><option>Descriptive</option><option>Recount</option><option>Report</option><option>Procedure</option><option>Announcement</option><option>Invitation</option></datalist><div class="help">Untuk dua teks, sebutkan jenis masing-masing.</div></div>
 <div class="field"><label for="barrett">Kategori Barrett</label><select id="barrett" name="barrett" required><option value="">Pilih kategori pemahaman</option><option>Literal Comprehension</option><option>Reorganization</option><option>Inferential Comprehension</option><option>Evaluation</option><option>Appreciation</option></select><div id="barrettHelp" class="help">Jenis pemahaman bacaan yang ditargetkan.</div></div>
@@ -66,7 +66,7 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 
 <div class="field"><label for="bloom">Level kognitif Bloom</label><select id="bloom" name="bloom" required><option value="">Pilih proses kognitif</option><option>C1 — Remember</option><option>C2 — Understand</option><option>C3 — Apply</option><option>C4 — Analyze</option><option>C5 — Evaluate</option><option>C6 — Create</option></select></div>
 <div class="field"><label for="cefr">Target CEFR</label><select id="cefr" name="cefr" required><option value="">Pilih tingkat bahasa</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select></div>
-</div><div class="actions"><span class="draft" id="draftStatus">Draf tersimpan di perangkat ini.</span><button id="nextBtn" type="button" class="primary">Lanjut ke Butir Soal</button></div>
+</div><div class="actions"><span class="draft" id="draftStatus">Isian hanya digunakan untuk siklus ini; tidak disimpan di perangkat.</span><button id="nextBtn" type="button" class="primary">Lanjut ke Butir Soal</button></div>
 </div>
 <div id="step2" hidden>
 <div class="section-lead"><h2>Masukkan butir soal</h2><p>Sertakan stimulus lengkap, pertanyaan, serta seluruh opsi atau instruksi.</p></div>
@@ -77,7 +77,7 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 <p class="help" id="totalWords" style="margin:12px 0 22px">Panjang teks hanya informasi, bukan komponen skor.</p>
 <div class="field"><div class="field-top"><label for="question">Pertanyaan, opsi jawaban / instruksi</label><button type="button" id="clearquestion" class="clear-button" aria-label="Hapus Pertanyaan, opsi jawaban / instruksi">Clear</button></div><textarea id="question" name="question" rows="7" required maxlength="12000" placeholder="What can we infer about the main character?&#10;A. …&#10;B. …&#10;C. …&#10;D. …" lang="en"></textarea></div>
 <p class="help" style="margin-top:15px">Saat dianalisis, kisi-kisi dan soal dikirim ke layanan analisis. Hasilnya dapat Anda tinjau sebelum digunakan.</p>
-<div class="actions"><button type="button" id="backBtn">Kembali</button><button type="submit" id="analyzeBtn" class="primary">Analisis Soal</button></div>
+<div class="actions"><span class="small">Parameter sudah ditetapkan untuk siklus ini.</span><button type="submit" id="analyzeBtn" class="primary">Analisis Soal</button></div>
 </div>
 </form>
 </section>
@@ -88,11 +88,11 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 </details>
 </div>
 <section id="step3" hidden aria-label="Analisis dan telaah">
-<div class="actions result-actions"><button type="button" id="editQuestion">Kembali ke Butir Soal</button><button type="button" class="primary" id="startNew">START NEW ANALYSIS</button></div>
-<section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Pemeriksaan berjalan di latar belakang. Status diperbarui otomatis; jangan mengirim ulang soal selama proses berlangsung.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section>
-<div id="resultTools" class="image-actions" hidden><button type="button" id="copyResult">Salin Hasil</button><button type="button" id="reviseBtn" class="primary">Buat Revisi Sesuai Parameter</button><button type="button" id="reanalyze">Analisis Ulang</button></div><p id="resultStatus" class="help" role="status"></p><button type="button" id="retryRequest" hidden>Coba Lagi</button><section id="results" class="results" aria-label="Hasil analisis" hidden></section>
+<div class="actions result-actions"><button type="button" class="primary" id="startNew">START FRESH</button></div>
+
+<div id="resultTools" class="image-actions" hidden><button type="button" id="copyResult">Salin Hasil</button><button type="button" id="reviseBtn" class="primary">Buat Revisi Sesuai Parameter</button></div><p id="resultStatus" class="help" role="status"></p><section id="results" class="results" aria-label="Hasil analisis" hidden></section>
 </section>
-<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v2.1.0</span></footer>
+<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v2.2.0</span></footer>
 </main>
 <script>
 'use strict';
@@ -106,32 +106,47 @@ const descriptions={
 'Evaluation':'Menilai isi atau tindakan berdasarkan bukti dan kriteria.',
 'Appreciation':'Menelaah dampak emosional dan estetis, termasuk bahasa serta gaya penulis.'};
 const fields=['type','genre','barrett','grade','kisi','bloom','cefr','text1','text2','question'];
-let step=1,hasSecond=false,busy=false,saveTimer,lastInput=null,lastData=null,cachedResult=null;
+let step=1,hasSecond=false,busy=false,saveTimer,lastInput=null,lastData=null,lockedParameters=null,cycle=0;
 function escapeHTML(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function badge(label){return '<span class="badge status-'+labels.indexOf(label)+'">'+escapeHTML(label)+'</span>';}
 function wordCount(s){return (s.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu)||[]).length;}
 function counts(){const a=wordCount($('text1').value),b=wordCount($('text2').value);$('count1').textContent=a+' kata';$('count2').textContent=b+' kata';$('totalWords').textContent='Total stimulus: '+(a+(hasSecond?b:0))+' kata. Panjang teks tidak diberi skor langsung.';}
 function second(on){hasSecond=on;$('secondText').hidden=!on;$('addText').hidden=on;$('text2').required=on;counts();}
 function showStep(n){
+ if(n<step||n>step+1||(n===3&&!lastData))return false;
  step=n;$('step1').hidden=n!==1;$('step2').hidden=n!==2;$('step3').hidden=n!==3;$('inputWorkspace').hidden=n===3;
  $('progressLabel').textContent='Halaman '+n+' dari 3';
  for(let i=1;i<=3;i++){$('tab'+i).classList.toggle('active',i===n);if(i===n)$('tab'+i).setAttribute('aria-current','step');else $('tab'+i).removeAttribute('aria-current');}
- $('tab3').disabled=busy||!lastInput;
+
  $('progressLabel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function validGroup(id){for(const el of $(id).querySelectorAll('input,textarea,select')){if(!el.checkValidity()){el.reportValidity();return false;}}return true;}
-function goNext(){if(validGroup('step1'))showStep(2);}
-$('tab1').onclick=()=>{if(!busy)showStep(1);};$('tab2').onclick=()=>{if(!busy)goNext();};$('nextBtn').onclick=goNext;$('backBtn').onclick=()=>showStep(1);
-$('tab3').onclick=()=>{if(!busy&&lastInput)showStep(3);};$('editQuestion').onclick=()=>{if(!busy)showStep(2);};
+function goNext(){
+ if(busy||step!==1||!validGroup('step1'))return;
+ const input=payload();if(Object.values(input.blueprint).some(v=>!v.trim()))return;
+ lockedParameters={blueprint:structuredClone(input.blueprint),grade:input.grade};showStep(2);
+}
+$('nextBtn').onclick=goNext;
 $('addText').onclick=()=>{second(true);saveDraft();$('text2').focus();};$('removeText').onclick=()=>{second(false);saveDraft();};
-function saveDraft(){try{localStorage.setItem('analisis-butir-draft-v1',JSON.stringify({fields:Object.fromEntries(fields.map(id=>[id,$(id).value])),hasSecond}));$('draftStatus').textContent='Draf tersimpan di perangkat ini.';}catch{$('draftStatus').textContent='Penyimpanan lokal tidak tersedia. Pertahankan halaman ini tetap terbuka.';}}
-function invalidate(){$('resultTools').hidden=true;$('resultStatus').textContent='';$('retryRequest').hidden=true;lastData=null;$('results').hidden=true;$('results').innerHTML='';lastInput=null;$('tab3').disabled=true;}
-$('analysisForm').addEventListener('input',()=>{counts();$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';invalidate();$('errorBox').hidden=true;clearTimeout(saveTimer);saveTimer=setTimeout(saveDraft,250);});
-$('analysisForm').addEventListener('change',()=>{invalidate();saveDraft();$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';});
+function purgeStoredData(){
+ for(const storage of [typeof localStorage==='undefined'?null:localStorage,typeof sessionStorage==='undefined'?null:sessionStorage]){
+  if(!storage)continue;
+  try{
+   const keys=[];for(let i=0;i<storage.length;i++){const key=storage.key(i);if(key?.startsWith('analisis-butir-')||key?.startsWith('butir-pending-'))keys.push(key);}
+   for(const key of keys)storage.removeItem(key);
+   // Also works in restricted or older storage implementations.
+   for(const key of ['analisis-butir-draft-v1','analisis-butir-template-v1',...['v2','v3','v4'].map(v=>'analisis-butir-result-'+v)])storage.removeItem(key);
+  }catch{}
+ }
+}
+function saveDraft(){$('draftStatus').textContent='Isian hanya digunakan untuk siklus ini; tidak disimpan di perangkat.';}
+function invalidate(){$('resultTools').hidden=true;$('resultStatus').textContent='';$('retryRequest').hidden=true;lastData=null;$('results').hidden=true;$('results').innerHTML='';lastInput=null;}
+$('analysisForm').addEventListener('input',()=>{counts();$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';invalidate();$('errorBox').hidden=true;});
+$('analysisForm').addEventListener('change',()=>{invalidate();});
 $('addText').addEventListener('click',invalidate);$('removeText').addEventListener('click',invalidate);
-try{const d=JSON.parse(localStorage.getItem('analisis-butir-draft-v1')||'null');if(d?.fields){if(typeof d.fields.kisi!=='string')d.fields.kisi=[d.fields.indicator,d.fields.scope].filter(v=>typeof v==='string'&&v.trim()).join('\n\n');for(const id of fields)if(typeof d.fields[id]==='string')$(id).value=d.fields[id];second(d.hasSecond===true);$('barrettHelp').textContent=descriptions[$('barrett').value]||'Jenis pemahaman bacaan yang ditargetkan.';}}catch{$('draftStatus').textContent='Draf lokal tidak tersedia.';}counts();
+purgeStoredData();counts();
 function payload(){return {blueprint:Object.fromEntries(['type','genre','barrett','kisi','bloom','cefr'].map(id=>[id,$(id).value.trim()])),grade:$('grade').value?Number($('grade').value):null,stimuli:[$('text1').value.trim(),...(hasSecond?[$('text2').value.trim()]:[])],question:$('question').value.trim()};}
-function setBusy(on){busy=on;for(const el of document.querySelectorAll('form input,form textarea,form select,form button,.steps button'))el.disabled=on;$('analysisForm').setAttribute('aria-busy',String(on));$('analyzeBtn').textContent=on?'Menganalisis…':'Analisis Soal';$('startNew').disabled=on;$('editQuestion').disabled=on;$('tab3').disabled=on||!lastInput;for(const id of ['reviseBtn','reanalyze','retryRequest'])$(id).disabled=on;}
+function setBusy(on){busy=on;for(const el of document.querySelectorAll('form input,form textarea,form select,form button'))el.disabled=on;$('analysisForm').setAttribute('aria-busy',String(on));$('analyzeBtn').textContent=on?'Memproses…':'Analisis Soal';for(const id of ['startNew','reviseBtn','retryRequest'])$(id).disabled=on;}
 // Word-level LCS. Large replacements use a bounded prefix/suffix comparison to keep mobile responsive.
 function diffPair(original,revised){
  if(original===revised)return {before:escapeHTML(original),after:escapeHTML(revised),coarse:false};
@@ -166,7 +181,7 @@ function renderResult(data,input){
  }else revision='<section class="panel result-section"><h2>Revisi sesuai parameter</h2><p>Klik Buat Revisi Sesuai Parameter untuk menyempurnakan soal berdasarkan temuan, termasuk target CEFR.</p></section>';
  const score=Number(r.overall.score).toLocaleString('id-ID',{maximumFractionDigits:3});
  $('results').innerHTML='<div class="result-top"><h2>Hasil telaah soal</h2><span class="small">'+input.stimuli.length+' teks · '+input.stimuli.reduce((s,t)=>s+wordCount(t),0)+' kata</span></div><section class="overall"><div><div class="eyebrow">Skor keseluruhan</div><div class="overall-number">'+score+'<small>/100</small></div><div class="eyebrow">Rata-rata 7 kategori</div></div><div>'+badge(r.overall.label)+'<p class="reason">'+e(r.overall.reason)+'</p>'+'</div></section>'+answerKeys+'<section class="panel result-section"><h2>Temuan utama</h2>'+issues+'</section><details class="panel result-section"><summary>Rincian tujuh kategori</summary><div class="score-grid">'+cards+'</div></details><section class="panel result-section"><h2>Analisis Grammar</h2><p>'+e(r.grammar.summary)+'</p>'+grammarNotes+'</section>'+revision;
- lastInput=input;lastData=data;cachedResult={version:4,input,data};try{localStorage.setItem('analisis-butir-result-v4',JSON.stringify(cachedResult));}catch{}$('resultTools').hidden=false;$('reviseBtn').hidden=r.overall.label==='Sangat Sesuai'||!!r.revision;showStep(3);$('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'start'});
+ lastInput=structuredClone(input);lastData=data;$('resultTools').hidden=false;$('reviseBtn').hidden=r.overall.label==='Sangat Sesuai'||!!r.revision;showStep(3);$('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 async function readServiceResponse(response,onProgress){
  if(!response.headers?.get('content-type')?.includes('application/x-ndjson')){
@@ -190,13 +205,13 @@ async function readServiceResponse(response,onProgress){
  }finally{await reader.cancel().catch(()=>{});reader.releaseLock();}
 }
 
-const pendingJobs={};
-function clearPending(kind){delete pendingJobs[kind];try{localStorage.removeItem('butir-pending-v3-'+kind);}catch{}}
-function savePending(kind,job){pendingJobs[kind]=job;try{localStorage.setItem('butir-pending-v3-'+kind,JSON.stringify(job));}catch{}}
-function pendingFor(kind,fingerprint){
- let job=pendingJobs[kind];try{job=job||JSON.parse(localStorage.getItem('butir-pending-v3-'+kind)||'null');}catch{}
- if(job&&job.fingerprint===fingerprint&&Date.now()-job.createdAt<86400000)return job;
- return null;
+const pendingJobs={},cycleJobs=new Set();
+function clearPending(kind){delete pendingJobs[kind];}
+function savePending(kind,job){pendingJobs[kind]=job;cycleJobs.add(job.id);}
+function pendingFor(kind,fingerprint){const job=pendingJobs[kind];return job&&job.fingerprint===fingerprint?job:null;}
+async function forgetCycleJobs(){
+ const ids=[...cycleJobs];cycleJobs.clear();
+ for(const id of ids){try{await jobRequest({action:'forget',id});}catch{/* Server TTL remains the fallback when offline. */}}
 }
 function waitForStatus(ms,signal){return new Promise((resolve,reject)=>{
  if(signal?.aborted)return reject(signal.reason);
@@ -211,6 +226,7 @@ async function jobRequest(body,signal){
  finally{clearTimeout(timeout);signal?.removeEventListener('abort',abort);}
 }
 async function backgroundService(kind,payload,onProgress,signal){
+ const runCycle=cycle;
  const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(payload)));
  const fingerprint=Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('');
  let job=pendingFor(kind,fingerprint);
@@ -233,6 +249,7 @@ async function backgroundService(kind,payload,onProgress,signal){
    if(++failures>=3)throw new Error('Koneksi pengecekan status terputus. Klik Coba Lagi untuk memeriksa proses yang sama tanpa mengirim ulang analisis. [STATUS_CONNECTION]');
    onProgress('Koneksi status terganggu. Mencoba menghubungkan kembali…');await waitForStatus(2000*failures,signal);continue;
   }
+  if(runCycle!==cycle)throw new Error('Siklus telah diakhiri.');
   if(state.state==='done'){clearPending(kind);return state.data;}
   if(state.state==='error'){clearPending(kind);throw new Error(state.error||'Pemeriksaan belum berhasil. [JOB_FAILED]');}
   if(!['queued','running'].includes(state.state))throw new Error('Status pemeriksaan tidak dikenal. [INVALID_JOB_STATUS]');
@@ -243,34 +260,41 @@ async function backgroundService(kind,payload,onProgress,signal){
 
 $('analysisForm').noValidate=true;
 $('analysisForm').addEventListener('submit',event=>{event.preventDefault();runAnalysis();});
-async function runAnalysis(force=false){
- if(busy)return;
- showStep(1);if(!validGroup('step1'))return;showStep(2);if(!validGroup('step2'))return;
- const input=payload();if([...Object.values(input.blueprint),...input.stimuli,input.question].some(v=>!v.trim())){showStep(3);$('errorBox').textContent='Field wajib tidak boleh hanya berisi spasi.';$('errorBox').hidden=false;return;}
- saveDraft();if(!force&&cachedResult?.version===4&&JSON.stringify(cachedResult.input)===JSON.stringify(input)){renderResult(cachedResult.data,input);$('resultStatus').textContent='Menampilkan hasil tersimpan untuk input dan parameter yang sama.';return;}showStep(3);setBusy(true);$('results').hidden=!lastData;$('errorBox').hidden=true;$('retryRequest').hidden=true;$('loadingBox').hidden=false;
- const stages=['Permintaan sedang diproses…','Masih menunggu hasil pemeriksaan…','Mohon tunggu. Isian Anda tetap tersimpan…','Pemeriksaan masih berlangsung…'];let phase=0;$('loadingText').textContent=stages[0];
- let serverProgress=false;const timer=setInterval(()=>{if(serverProgress)return;$('loadingText').textContent=stages[Math.min(++phase,stages.length-1)];},6500);
+async function runAnalysis(){
+ if(busy||step!==2||!lockedParameters||!validGroup('step2'))return;
+ const input={...payload(),...structuredClone(lockedParameters)};
+ if([...input.stimuli,input.question].some(v=>!v.trim())){$('errorBox').textContent='Field wajib tidak boleh hanya berisi spasi.';$('errorBox').hidden=false;return;}
+ setBusy(true);$('errorBox').hidden=true;$('retryRequest').hidden=true;$('loadingBox').hidden=false;$('loadingText').textContent='Memeriksa soal. Halaman hasil terbuka setelah analisis berhasil…';
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),260000);
  try{
-  if(location.protocol==='file:')throw new Error('Halaman terbuka sebagai file lokal. Jalankan melalui server lokal atau Netlify agar analisis dapat diakses.');
-  const data=await backgroundService('analyze',input,message=>{serverProgress=true;$('loadingText').textContent=message;},controller.signal);
-  renderResult(data,input);lastInput=input;
- }catch(err){$('errorBox').textContent=err.name==='AbortError'?'Waktu tunggu habis. Input tetap tersimpan; silakan coba kembali.':err instanceof TypeError?'Tidak dapat menghubungi server. Periksa koneksi internet, lalu coba lagi.':err.message;$('retryRequest').textContent='Coba Analisis Lagi';$('retryRequest').hidden=false;$('retryRequest').onclick=()=>runAnalysis(true);$('errorBox').hidden=false;$('errorBox').scrollIntoView({behavior:'smooth',block:'center'});}
- finally{clearInterval(timer);clearTimeout(timeout);$('loadingBox').hidden=true;setBusy(false);}
+  if(location.protocol==='file:')throw new Error('Jalankan aplikasi melalui server atau Netlify.');
+  const data=await backgroundService('analyze',input,message=>{$('loadingText').textContent=message;},controller.signal);
+  renderResult(data,input);
+ }catch(err){
+  $('errorBox').textContent=err.name==='AbortError'?'Waktu pengecekan habis. Isian tetap ada di halaman ini.':err instanceof TypeError?'Koneksi terputus. Periksa koneksi lalu coba kembali.':err.message;
+  $('retryRequest').textContent='Coba Analisis Lagi';$('retryRequest').hidden=false;$('retryRequest').onclick=runAnalysis;$('errorBox').hidden=false;
+ }finally{clearTimeout(timeout);$('loadingBox').hidden=true;setBusy(false);}
 }
 let selectedImages=[],pendingExtraction=null;
-function startNewAnalysis(){
- if(busy)return;
- clearTimeout(saveTimer);
+function resetCycle(){
+ cycle++;clearTimeout(saveTimer);void forgetCycleJobs();
+ for(const kind of ['analyze','revise','read-image'])clearPending(kind);
  for(const id of fields)$(id).value='';
- $('imageFiles').value='';$('cameraFile').value='';
- selectedImages=[];clearExtraction();updateImagePreviews();imageMessage('');
- second(false);invalidate();cachedResult=null;setInputMode(false);try{localStorage.removeItem('analisis-butir-result-v4');}catch{}
+ $('imageFiles').value='';$('cameraFile').value='';selectedImages=[];clearExtraction();updateImagePreviews();imageMessage('');
+ second(false);invalidate();lockedParameters=null;setInputMode(false);purgeStoredData();
+ $('revisionSeed').hidden=true;$('revisionReason').textContent='';$('revisionSeedText').textContent='';
  $('errorBox').hidden=true;$('errorBox').textContent='';$('loadingBox').hidden=true;$('loadingText').textContent='Menyiapkan analisis…';
- $('barrettHelp').textContent='Jenis pemahaman bacaan yang ditargetkan.';
- try{localStorage.removeItem('analisis-butir-draft-v1');$('draftStatus').textContent='Analisis baru. Silakan isi parameter dan kisi-kisi.';}
- catch{saveDraft();}
- for(const kind of ['analyze','revise','read-image'])clearPending(kind);setBusy(false);showStep(1);$('type').focus();
+ $('barrettHelp').textContent='Jenis pemahaman bacaan yang ditargetkan.';saveDraft();step=1;showStep(1);
+}
+function startNewAnalysis(){if(busy)return;resetCycle();setBusy(false);$('kisi').focus();}
+function beginRevisionCycle(input,revision){
+ resetCycle();
+ for(const [id,value] of Object.entries(input.blueprint))$(id).value=value;
+ $('grade').value=input.grade===null?'':String(input.grade);
+ $('text1').value=revision.stimuli[0];$('text2').value=revision.stimuli[1]||'';$('question').value=revision.question;second(revision.stimuli.length===2);
+ $('revisionReason').textContent=revision.rationale;
+ $('revisionSeedText').textContent=revision.stimuli.map((t,i)=>'Stimulus '+(i+1)+'\n'+t).join('\n\n')+'\n\n'+revision.question+'\n\nKunci: '+revision.answerKey.answer+'\n'+revision.answerKey.explanation;
+ $('revisionSeed').hidden=false;$('barrettHelp').textContent=descriptions[$('barrett').value]||'';$('kisi').focus();
 }
 $('startNew').onclick=startNewAnalysis;
 for(const id of ['text1','text2','question'])$('clear'+id).onclick=()=>{
@@ -329,24 +353,21 @@ $('applyExtraction').onclick=()=>{
 
 function setInputMode(image){$('imageImport').hidden=!image;$('textMode').setAttribute('aria-pressed',String(!image));$('imageMode').setAttribute('aria-pressed',String(image));}
 $('textMode').onclick=()=>setInputMode(false);$('imageMode').onclick=()=>setInputMode(true);
-$('saveTemplate').onclick=()=>{if(!validGroup('step1'))return;try{localStorage.setItem('analisis-butir-template-v1',JSON.stringify(Object.fromEntries(fields.slice(0,7).map(id=>[id,$(id).value]))));$('templateStatus').textContent='Template parameter tersimpan di perangkat ini.';}catch{$('templateStatus').textContent='Template tidak dapat disimpan pada perangkat ini.';}};
-$('loadTemplate').onclick=()=>{try{const template=JSON.parse(localStorage.getItem('analisis-butir-template-v1')||'null');if(!template){$('templateStatus').textContent='Belum ada template tersimpan.';return;}for(const id of fields.slice(0,7))if(typeof template[id]==='string')$(id).value=template[id];invalidate();saveDraft();$('barrettHelp').textContent=descriptions[$('barrett').value]||'';$('templateStatus').textContent='Template diterapkan. Periksa kisi-kisi untuk soal ini.';}catch{$('templateStatus').textContent='Template tidak dapat dibaca.';}};
-$('reanalyze').onclick=()=>runAnalysis(true);
 $('copyResult').onclick=async()=>{try{await navigator.clipboard.writeText($('results').innerText);$('resultStatus').textContent='Hasil telaah disalin.';}catch{$('resultStatus').textContent='Penyalinan tidak tersedia. Pilih teks hasil, lalu salin secara manual.';}};
 $('results').addEventListener('click',event=>{const button=event.target.closest('[data-side]');if(!button)return;const original=button.dataset.side==='original';$('results').classList.toggle('show-original',original);for(const b of $('results').querySelectorAll('[data-side]'))b.setAttribute('aria-pressed',String(b===button));});
 async function requestRevision(){
- if(busy||!lastInput||!lastData)return;
+ if(busy||step!==3||!lastInput||!lastData)return;
  setBusy(true);$('errorBox').hidden=true;$('retryRequest').hidden=true;$('loadingBox').hidden=false;$('loadingText').textContent='Menyusun revisi sesuai parameter, termasuk target CEFR…';
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),260000);
  try{
   const data=await backgroundService('revise',{input:lastInput,analysis:lastData.result},message=>{$('loadingText').textContent=message;},controller.signal);const r=data.revision;
   if(!r||!Array.isArray(r.stimuli)||r.stimuli.length!==lastInput.stimuli.length||!r.stimuli.every(t=>typeof t==='string'&&t.trim())||typeof r.question!=='string'||!r.question.trim()||!r.answerKey||typeof r.rationale!=='string')throw new Error('Revisi belum lengkap. Coba buat revisi kembali.');
-  renderResult({result:{...lastData.result,revision:r}},lastInput);$('resultStatus').textContent='Revisi selesai. Tinjau perubahan dan kunci jawaban revisi.';
+  beginRevisionCycle(structuredClone(lastInput),r);
  }catch(error){$('errorBox').textContent=(error.name==='AbortError'?'Waktu penyusunan revisi habis.':error instanceof TypeError?'Koneksi terputus saat menyusun revisi.':error.message)+' Hasil analisis tetap tersedia.';$('errorBox').hidden=false;$('retryRequest').textContent='Coba Revisi Lagi';$('retryRequest').hidden=false;$('retryRequest').onclick=requestRevision;}
  finally{clearTimeout(timeout);$('loadingBox').hidden=true;setBusy(false);}
 }
 $('reviseBtn').onclick=requestRevision;
-try{const saved=JSON.parse(localStorage.getItem('analisis-butir-result-v4')||'null');if(saved?.version===4){cachedResult=saved;if(JSON.stringify(saved.input)===JSON.stringify(payload())){renderResult(saved.data,saved.input);$('resultStatus').textContent='Hasil terakhir dipulihkan dari perangkat ini.';}}}catch{cachedResult=null;}
+
 </script>
 </body>
 </html>

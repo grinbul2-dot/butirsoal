@@ -33,16 +33,16 @@ test('Groq truncation, refusal and missing key fail clearly without accepting pa
   let calls=0;await assert.rejects(generateWithRecovery({provider:'groq',body,validate:x=>x},{fetch:async()=>{calls++;return {ok:true,json:async()=>({choices:[choice]})};}}),e=>e.status===status);assert.equal(calls,1);
  }
 }));
-test('text and image jobs both require only Groq',()=>withKeys(async()=>{
+test('text and image jobs both require only Gemini',()=>withKeys(async()=>{
  const handler=createJobsHandler({store:memoryStore(),dispatch:async()=>{}});
  const input={blueprint:{type:'PG',genre:'Narrative',barrett:'Literal Comprehension',kisi:'Find a detail',bloom:'C2 — Understand',cefr:'A2'},grade:null,stimuli:['Rina is kind.'],question:'Who is kind?'};
  const req=(kind,payload,char)=>new Request('https://example.test',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'start',id:Date.now()+'-'+char.repeat(64),kind,payload})});
- process.env.GROQ_API_KEY='groq-test';assert.equal((await handler(req('analyze',input,'a'))).status,202);
+ process.env.GEMINI_API_KEY='gemini-test';assert.equal((await handler(req('analyze',input,'a'))).status,202);
  const image={images:[{mimeType:'image/jpeg',data:Buffer.from([255,216,255,0,0,0,0,0,0,0,0,0]).toString('base64')}]};
  assert.equal((await handler(req('read-image',image,'b'))).status,202);
- delete process.env.GROQ_API_KEY;process.env.GEMINI_API_KEY='gemini-test';
- assert.match((await (await handler(req('read-image',image,'c'))).json()).error,/GROQ_API_KEY/);
- assert.match((await (await handler(req('analyze',input,'d'))).json()).error,/GROQ_API_KEY/);
+ delete process.env.GEMINI_API_KEY;process.env.GROQ_API_KEY='groq-test';
+ assert.match((await (await handler(req('read-image',image,'c'))).json()).error,/GEMINI_API_KEY/);
+ assert.match((await (await handler(req('analyze',input,'d'))).json()).error,/GEMINI_API_KEY/);
 }));
 test('legacy non-Qwen main model is rejected before any request',()=>withKeys(async()=>{
  process.env.GROQ_API_KEY='test';process.env.GROQ_MODEL='openai/gpt-oss-120b';let called=false;

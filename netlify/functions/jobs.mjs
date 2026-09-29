@@ -1,24 +1,25 @@
 import {jobStore,jobPayload,startJob,publicJob,validJobId,JOB_TTL} from './lib/jobs.mjs';
 import {InputError} from './lib/contract.mjs';
 import {reply} from './lib/transport.mjs';
-const respond=(status,data)=>{const r=reply(status,data);return new Response(r.body,{status,headers:{...r.headers,'X-App-Version':'2.1.0'}});};
+const respond=(status,data)=>{const r=reply(status,data);return new Response(r.body,{status,headers:{...r.headers,'X-App-Version':'2.2.0'}});};
 export function createJobsHandler(deps={}){return async request=>{
  if(request.method!=='POST')return respond(405,{error:'Gunakan metode POST.'});
  if(!request.headers.get('content-type')?.includes('application/json'))return respond(415,{error:'Format permintaan harus JSON.'});
  let body;
  try{const raw=await request.text();if(Buffer.byteLength(raw)>4500000)return respond(413,{error:'Data terlalu besar.'});body=JSON.parse(raw);}catch{return respond(400,{error:'Data JSON tidak valid.'});}
- if(!validJobId(body?.id)||!['start','status'].includes(body?.action))return respond(400,{error:'Kode proses tidak valid.'});
+ if(!validJobId(body?.id)||!['start','status','forget'].includes(body?.action))return respond(400,{error:'Kode proses tidak valid.'});
  const now=(deps.now||Date.now)();
  if(Number(body.id.slice(0,13))>now+600000||now-Number(body.id.slice(0,13))>JOB_TTL)return respond(410,{error:'Kode proses kedaluwarsa. Mulai pemeriksaan kembali. [JOB_EXPIRED]'});
  let payload;
  if(body.action==='start'){
   try{payload=jobPayload(body.kind,body.payload);}catch(e){return respond(400,{error:e instanceof InputError?e.message:'Data analisis tidak lengkap.'});}
-  const keyName='GROQ_API_KEY';
+  const keyName='GEMINI_API_KEY';
   if(!process.env[keyName])return respond(503,{error:'Layanan belum diaktifkan. Pengelola perlu melengkapi '+keyName+' pada Functions. [CONFIG_MISSING]'});
  }
  let store;
  try{store=deps.store||await jobStore();}catch{return respond(503,{error:'Penyimpanan proses belum tersedia. Pengelola perlu memeriksa Netlify Blobs dan deploy seluruh paket. [JOB_STORAGE]'});}
  try{
+  if(body.action==='forget'){await store.delete(body.id);return respond(200,{state:'forgotten'});}
   if(body.action==='status'){
    const job=await store.get(body.id,{type:'json'});
    if(!job)return respond(404,{error:'Proses belum terdaftar. Coba kembali. [JOB_NOT_FOUND]'});

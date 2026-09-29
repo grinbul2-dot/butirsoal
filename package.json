@@ -1,9 +1,9 @@
 {
   "name": "analisis-butir-soal",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "type": "module",
-  "description": "Analisis dan revisi soal serta pembacaan gambar Bahasa Inggris dengan Groq Qwen",
+  "description": "Analisis dan revisi soal serta pembacaan gambar Bahasa Inggris dengan Gemini",
   "engines": {
     "node": ">=22"
   },
