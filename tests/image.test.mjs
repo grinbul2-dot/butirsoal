@@ -15,16 +15,16 @@ test('rejected extraction never returns invented transcript; accepted must be co
 });
 test('unsupported file gives requested message; missing configuration is a service error',async()=>{
  const r=await handler({...event,body:JSON.stringify({images:[{...png,mimeType:'application/pdf'}]})});assert.equal(r.statusCode,422);assert.match(JSON.parse(r.body).error,/^File tidak didukung karena/);
- const old=process.env.GEMINI_API_KEY;delete process.env.GEMINI_API_KEY;try{assert.equal((await handler(event)).statusCode,503);}finally{if(old)process.env.GEMINI_API_KEY=old;}
+ const old=process.env.GROQ_API_KEY;delete process.env.GROQ_API_KEY;try{assert.equal((await handler(event)).statusCode,503);}finally{if(old)process.env.GROQ_API_KEY=old;}
 });
 test('image endpoint passes real image parts and distinguishes rejection, success and provider failure',async()=>{
- const oldFetch=global.fetch,oldKey=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='test-only';
+ const oldFetch=global.fetch,oldKey=process.env.GROQ_API_KEY;process.env.GROQ_API_KEY='test-only';
  let extraction={accepted:false,reason:'teks buram dan opsi B tidak terbaca.',stimuli:[],question:''};
  try{
-  global.fetch=async(url,opts)=>{const payload=JSON.parse(opts.body);assert.equal(payload.contents[0].parts[1].inlineData.mimeType,'image/png');return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(extraction)}]}}]})};};
+  global.fetch=async(url,opts)=>{const payload=JSON.parse(opts.body);assert.equal(new URL(url).hostname,'api.groq.com');assert.equal(payload.model,'qwen/qwen3.8-27b');assert.equal(payload.messages[1].content[1].image_url.url,'data:image/png;base64,'+png.data);assert.equal(opts.headers.Authorization,'Bearer test-only');return {ok:true,json:async()=>({choices:[{finish_reason:'stop',message:{content:JSON.stringify(extraction)}}]})};};
   let r=await handler(event);assert.equal(r.statusCode,422);assert.equal(JSON.parse(r.body).error,'File tidak didukung karena teks buram dan opsi B tidak terbaca.');
   extraction={accepted:true,reason:'',stimuli:['Rina helped a woman.'],question:'Who helped the woman? A. Rina B. Dina'};
   r=await handler(event);assert.equal(r.statusCode,200);assert.equal(JSON.parse(r.body).result.question,extraction.question);
   global.fetch=async()=>({ok:false,status:401});r=await handler(event);assert.equal(r.statusCode,503);assert.ok(!r.body.includes('File tidak didukung'));
- }finally{global.fetch=oldFetch;if(oldKey)process.env.GEMINI_API_KEY=oldKey;else delete process.env.GEMINI_API_KEY;}
+ }finally{global.fetch=oldFetch;if(oldKey)process.env.GROQ_API_KEY=oldKey;else delete process.env.GROQ_API_KEY;}
 });

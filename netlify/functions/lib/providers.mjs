@@ -14,13 +14,12 @@ export function groqSchema(schema){
 }
 export function providerRequest(provider,model,key,body){
  if(provider==='gemini')return {url:`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,headers:{'Content-Type':'application/json','x-goog-api-key':key},body};
- if(body.contents?.some(c=>c.parts?.some(p=>p.inlineData)))throw new Error('TEXT_PROVIDER_RECEIVED_IMAGE');
  return {
   url:'https://api.groq.com/openai/v1/chat/completions',
   headers:{'Content-Type':'application/json',Authorization:`Bearer ${key}`},
   body:{model,stream:false,messages:[
    {role:'system',content:body.systemInstruction.parts.map(p=>p.text).join('\n')},
-   ...body.contents.map(c=>({role:c.role==='model'?'assistant':'user',content:c.parts.map(p=>p.text).join('\n')}))
+   ...body.contents.map(c=>({role:c.role==='model'?'assistant':'user',content:c.parts.some(p=>p.inlineData)?c.parts.map(p=>p.inlineData?{type:'image_url',image_url:{url:`data:${p.inlineData.mimeType};base64,${p.inlineData.data}`}}:{type:'text',text:p.text}):c.parts.map(p=>p.text).join('\n')}))
   ],max_completion_tokens:body.generationConfig.maxOutputTokens,
   response_format:{type:'json_schema',json_schema:{name:'question_review',strict:true,schema:groqSchema(body.generationConfig.responseJsonSchema)}}}
  };

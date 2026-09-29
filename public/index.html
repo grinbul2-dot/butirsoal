@@ -92,7 +92,7 @@ input:focus,select:focus,textarea:focus{border-color:#7957b7;outline:3px solid #
 <section id="feedback" style="margin-top:22px" aria-live="polite"><div id="errorBox" class="notice error" role="alert" hidden></div><div id="loadingBox" class="notice loading" hidden><strong id="loadingText">Menyiapkan analisis…</strong><span class="small">Pemeriksaan berjalan di latar belakang. Status diperbarui otomatis; jangan mengirim ulang soal selama proses berlangsung.</span><div class="loading-track" aria-hidden="true"><span></span></div></div></section>
 <div id="resultTools" class="image-actions" hidden><button type="button" id="copyResult">Salin Hasil</button><button type="button" id="reviseBtn" class="primary">Buat Revisi Sesuai Parameter</button><button type="button" id="reanalyze">Analisis Ulang</button></div><p id="resultStatus" class="help" role="status"></p><button type="button" id="retryRequest" hidden>Coba Lagi</button><section id="results" class="results" aria-label="Hasil analisis" hidden></section>
 </section>
-<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v2.0.0</span></footer>
+<footer class="footer"><span>Suryo Agung Nugroho · English Teacher Tools</span><span>Satu soal. Telaah yang lebih terarah. · v2.1.0</span></footer>
 </main>
 <script>
 'use strict';
@@ -166,7 +166,7 @@ function renderResult(data,input){
  }else revision='<section class="panel result-section"><h2>Revisi sesuai parameter</h2><p>Klik Buat Revisi Sesuai Parameter untuk menyempurnakan soal berdasarkan temuan, termasuk target CEFR.</p></section>';
  const score=Number(r.overall.score).toLocaleString('id-ID',{maximumFractionDigits:3});
  $('results').innerHTML='<div class="result-top"><h2>Hasil telaah soal</h2><span class="small">'+input.stimuli.length+' teks · '+input.stimuli.reduce((s,t)=>s+wordCount(t),0)+' kata</span></div><section class="overall"><div><div class="eyebrow">Skor keseluruhan</div><div class="overall-number">'+score+'<small>/100</small></div><div class="eyebrow">Rata-rata 7 kategori</div></div><div>'+badge(r.overall.label)+'<p class="reason">'+e(r.overall.reason)+'</p>'+'</div></section>'+answerKeys+'<section class="panel result-section"><h2>Temuan utama</h2>'+issues+'</section><details class="panel result-section"><summary>Rincian tujuh kategori</summary><div class="score-grid">'+cards+'</div></details><section class="panel result-section"><h2>Analisis Grammar</h2><p>'+e(r.grammar.summary)+'</p>'+grammarNotes+'</section>'+revision;
- lastInput=input;lastData=data;cachedResult={version:3,input,data};try{localStorage.setItem('analisis-butir-result-v3',JSON.stringify(cachedResult));}catch{}$('resultTools').hidden=false;$('reviseBtn').hidden=r.overall.label==='Sangat Sesuai'||!!r.revision;showStep(3);$('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'start'});
+ lastInput=input;lastData=data;cachedResult={version:4,input,data};try{localStorage.setItem('analisis-butir-result-v4',JSON.stringify(cachedResult));}catch{}$('resultTools').hidden=false;$('reviseBtn').hidden=r.overall.label==='Sangat Sesuai'||!!r.revision;showStep(3);$('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 async function readServiceResponse(response,onProgress){
  if(!response.headers?.get('content-type')?.includes('application/x-ndjson')){
@@ -191,10 +191,10 @@ async function readServiceResponse(response,onProgress){
 }
 
 const pendingJobs={};
-function clearPending(kind){delete pendingJobs[kind];try{localStorage.removeItem('butir-pending-v2-'+kind);}catch{}}
-function savePending(kind,job){pendingJobs[kind]=job;try{localStorage.setItem('butir-pending-v2-'+kind,JSON.stringify(job));}catch{}}
+function clearPending(kind){delete pendingJobs[kind];try{localStorage.removeItem('butir-pending-v3-'+kind);}catch{}}
+function savePending(kind,job){pendingJobs[kind]=job;try{localStorage.setItem('butir-pending-v3-'+kind,JSON.stringify(job));}catch{}}
 function pendingFor(kind,fingerprint){
- let job=pendingJobs[kind];try{job=job||JSON.parse(localStorage.getItem('butir-pending-v2-'+kind)||'null');}catch{}
+ let job=pendingJobs[kind];try{job=job||JSON.parse(localStorage.getItem('butir-pending-v3-'+kind)||'null');}catch{}
  if(job&&job.fingerprint===fingerprint&&Date.now()-job.createdAt<86400000)return job;
  return null;
 }
@@ -247,7 +247,7 @@ async function runAnalysis(force=false){
  if(busy)return;
  showStep(1);if(!validGroup('step1'))return;showStep(2);if(!validGroup('step2'))return;
  const input=payload();if([...Object.values(input.blueprint),...input.stimuli,input.question].some(v=>!v.trim())){showStep(3);$('errorBox').textContent='Field wajib tidak boleh hanya berisi spasi.';$('errorBox').hidden=false;return;}
- saveDraft();if(!force&&cachedResult?.version===3&&JSON.stringify(cachedResult.input)===JSON.stringify(input)){renderResult(cachedResult.data,input);$('resultStatus').textContent='Menampilkan hasil tersimpan untuk input dan parameter yang sama.';return;}showStep(3);setBusy(true);$('results').hidden=!lastData;$('errorBox').hidden=true;$('retryRequest').hidden=true;$('loadingBox').hidden=false;
+ saveDraft();if(!force&&cachedResult?.version===4&&JSON.stringify(cachedResult.input)===JSON.stringify(input)){renderResult(cachedResult.data,input);$('resultStatus').textContent='Menampilkan hasil tersimpan untuk input dan parameter yang sama.';return;}showStep(3);setBusy(true);$('results').hidden=!lastData;$('errorBox').hidden=true;$('retryRequest').hidden=true;$('loadingBox').hidden=false;
  const stages=['Permintaan sedang diproses…','Masih menunggu hasil pemeriksaan…','Mohon tunggu. Isian Anda tetap tersimpan…','Pemeriksaan masih berlangsung…'];let phase=0;$('loadingText').textContent=stages[0];
  let serverProgress=false;const timer=setInterval(()=>{if(serverProgress)return;$('loadingText').textContent=stages[Math.min(++phase,stages.length-1)];},6500);
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),260000);
@@ -265,7 +265,7 @@ function startNewAnalysis(){
  for(const id of fields)$(id).value='';
  $('imageFiles').value='';$('cameraFile').value='';
  selectedImages=[];clearExtraction();updateImagePreviews();imageMessage('');
- second(false);invalidate();cachedResult=null;setInputMode(false);try{localStorage.removeItem('analisis-butir-result-v3');}catch{}
+ second(false);invalidate();cachedResult=null;setInputMode(false);try{localStorage.removeItem('analisis-butir-result-v4');}catch{}
  $('errorBox').hidden=true;$('errorBox').textContent='';$('loadingBox').hidden=true;$('loadingText').textContent='Menyiapkan analisis…';
  $('barrettHelp').textContent='Jenis pemahaman bacaan yang ditargetkan.';
  try{localStorage.removeItem('analisis-butir-draft-v1');$('draftStatus').textContent='Analisis baru. Silakan isi parameter dan kisi-kisi.';}
@@ -346,7 +346,7 @@ async function requestRevision(){
  finally{clearTimeout(timeout);$('loadingBox').hidden=true;setBusy(false);}
 }
 $('reviseBtn').onclick=requestRevision;
-try{const saved=JSON.parse(localStorage.getItem('analisis-butir-result-v3')||'null');if(saved?.version===3){cachedResult=saved;if(JSON.stringify(saved.input)===JSON.stringify(payload())){renderResult(saved.data,saved.input);$('resultStatus').textContent='Hasil terakhir dipulihkan dari perangkat ini.';}}}catch{cachedResult=null;}
+try{const saved=JSON.parse(localStorage.getItem('analisis-butir-result-v4')||'null');if(saved?.version===4){cachedResult=saved;if(JSON.stringify(saved.input)===JSON.stringify(payload())){renderResult(saved.data,saved.input);$('resultStatus').textContent='Hasil terakhir dipulihkan dari perangkat ini.';}}}catch{cachedResult=null;}
 </script>
 </body>
 </html>

@@ -13,7 +13,10 @@ export async function generateWithRecovery({body,validate,onProgress=()=>{},sign
  if(!['gemini','groq'].includes(provider))throw new ServiceError(503,'Konfigurasi layanan tidak valid. [CONFIG_INVALID]');
  const key=process.env[provider==='groq'?'GROQ_API_KEY':'GEMINI_API_KEY'];
  if(!key)throw new ServiceError(503,'Layanan belum diaktifkan. Hubungi pengelola untuk melengkapi konfigurasi layanan.');
- const models=[...new Set(provider==='groq'?[process.env.GROQ_MODEL||'openai/gpt-oss-120b',process.env.GROQ_FALLBACK_MODEL||'openai/gpt-oss-20b']:[process.env.GEMINI_MODEL||'gemini-3.6-flash',process.env.GEMINI_FALLBACK_MODEL||'gemini-3.5-flash-lite'])];
+ // The Qwen release uses one verified multimodal model for every operation.
+ // Legacy GPT-OSS fallback settings must not silently switch away from Qwen.
+ const models=[...new Set(provider==='groq'?[process.env.GROQ_MODEL||'qwen/qwen3.8-27b']:[process.env.GEMINI_MODEL||'gemini-3.6-flash',process.env.GEMINI_FALLBACK_MODEL||'gemini-3.5-flash-lite'])];
+ if(provider==='groq'&&models[0]!=='qwen/qwen3.8-27b')throw new ServiceError(503,'Pengaturan model belum sesuai paket ini. Pengelola perlu memperbarui GROQ_MODEL sesuai panduan deployment. [CONFIG_MODEL]');
  if(models.some(m=>!(provider==='groq'?/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/:/^[a-zA-Z0-9._-]+$/).test(m)))throw new ServiceError(503,'Konfigurasi layanan tidak valid. Hubungi pengelola.');
  const request=deps.fetch||globalThis.fetch,now=deps.now||Date.now,sleep=deps.sleep||pause;
  const start=now(),deadline=start+budgetMs;
